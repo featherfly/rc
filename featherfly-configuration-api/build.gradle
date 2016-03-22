@@ -1,0 +1,5 @@
+archivesBaseName = 'featherfly-configuration-api'
+
+dependencies {
+    compile 'cn.featherfly:featherfly-common:1.4.3'    
+}

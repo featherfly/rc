@@ -1,0 +1,130 @@
+allprojects {
+	apply plugin: 'java'
+	apply plugin: 'eclipse'
+	apply plugin: 'maven'  
+	apply plugin: 'maven-publish'  
+
+	group = 'cn.featherfly'
+	version = '1.0.0'
+	archivesBaseName = 'featherfly-configuration-build'
+
+	sourceCompatibility = 1.7  
+	targetCompatibility = 1.7  
+
+	tasks.withType(JavaCompile) {
+	    options.encoding = "UTF-8"
+	}
+	tasks.withType(Javadoc) {
+	    options.encoding = "UTF-8"
+	}
+
+	repositories {
+	    mavenCentral()
+	    maven {
+		url  ant.properties['user.home'] +  "/.m2/repository"
+	    }
+	}
+
+	sourceSets {
+	    main
+	    test
+	}
+
+	dependencies {
+	   /*
+	    compile 'cn.featherfly:featherfly-common:1.4.3'
+	    compile 'cn.featherfly:featherfly-algorithm:1.0.2'    
+	    compile 'cn.featherfly:featherfly-persistence-jdbc:1.3.1'
+	    compile 'org.springframework:spring-context:4.1.6.RELEASE'
+	    compile 'org.springframework:spring-context-support:4.1.6.RELEASE'
+	    compile 'org.javassist:javassist:3.20.0-GA'
+	    compile 'org.springframework:spring-test:4.1.6.RELEASE'    
+	    
+	    persistenceCompile sourceSets.api.output
+	    persistenceCompile 'cn.featherfly:featherfly-persistence-jdbc:1.3.0'
+	    persistenceCompile 'org.springframework:spring-context:4.1.6.RELEASE'
+	    persistenceCompile 'org.springframework:spring-context-support:4.1.6.RELEASE'
+	    
+	    springCompile sourceSets.api.output
+	    springCompile sourceSets.persistence.output
+	    springCompile 'org.springframework:spring-context:4.1.6.RELEASE'
+	    springCompile 'org.springframework:spring-context-support:4.1.6.RELEASE'
+	    springCompile 'org.javassist:javassist:3.20.0-GA'
+	    
+	    dynamicCompile sourceSets.api.output
+	    dynamicCompile sourceSets.persistence.output
+	    dynamicCompile sourceSets.spring.output
+	    dynamicCompile 'cn.featherfly:featherfly-common:1.4.3'
+	    dynamicCompile 'cn.featherfly:featherfly-algorithm:1.0.2'    
+	    dynamicCompile 'cn.featherfly:featherfly-persistence-jdbc:1.3.0'
+	    dynamicCompile 'cn.featherfly:featherfly-persistence-jdbc:1.3.0'
+	    dynamicCompile 'org.springframework:spring-context:4.1.6.RELEASE'
+	    dynamicCompile 'org.springframework:spring-context-support:4.1.6.RELEASE'
+	    dynamicCompile 'org.javassist:javassist:3.20.0-GA'
+	    */
+	    
+	    testCompile (
+			'org.testng:testng:6.8.21'
+			,'org.springframework:spring-test:4.1.6.RELEASE'
+			,'dom4j:dom4j:1.6.1'
+			,'org.slf4j:slf4j-log4j12:1.6.1'
+			,'log4j:log4j:1.2.16'
+			,'commons-dbcp:commons-dbcp:1.4'
+			,'mysql:mysql-connector-java:5.1.17'
+	    )
+	}
+    /*
+	sourceSets.all { set ->
+	    def jarTask = task("${set.name}Jar", type: Jar) {
+		baseName = baseName + "-$set.name"
+		from set.output
+	    }
+	    def sourcesTask = task("${set.name}SourcesJar", type: Jar) {
+		classifier "sources"
+		from set.java.srcDirs
+	    }
+	    def javadocTask = task("${set.name}JavadocJar", type: Jar, dependsOn:javadoc) {
+		classifier = "javadoc"        
+		from javadoc.destinationDir 
+	    }    
+	    artifacts {
+		archives jarTask
+		archives sourcesTask
+		archives javadocTask  
+	    }
+	    
+	    publishing {
+		publications {
+		    "${set.name}"(MavenPublication) {
+			artifactId archivesBaseName + "-$set.name"                
+			artifact jarTask
+			artifact (sourcesTask) {
+			    classifier "sources"
+			}
+			artifact (javadocTask) {
+			    classifier "javadoc"
+			}
+		    }
+		}        
+	    }
+	}
+    */
+
+    /*
+	def publishTask = task("publish-All-ToMavenLocal") {   
+	} << {
+		sourceSets.all { set ->
+		    def name = set.name.replaceFirst(String.valueOf(set.name.charAt(0)), String.valueOf(Character.toUpperCase(set.name.charAt(0))))
+		    //t.dependsOn(tasks.findByName("publish${name}PublicationToMavenLocal"))
+		}
+	}
+	*/
+
+	jar {
+	    manifest.attributes 'Build-By': "zhong ji"
+	    manifest.attributes 'Tool' : "gradle"
+	    manifest.attributes 'Build-Jdk' : ant.properties['java.runtime.version']
+	    manifest.attributes 'Bundle-License': 'http://www.apache.org/licenses/LICENSE-2.0'
+	    manifest.attributes 'Build-Name': archivesBaseName
+	}
+}
