@@ -2,11 +2,8 @@ allprojects {
 	apply plugin: 'java'
 	apply plugin: 'eclipse'
 	apply plugin: 'maven'  
-	apply plugin: 'maven-publish'  
-
-	group = 'cn.featherfly'
-	version = '1.0.0'
-	archivesBaseName = 'featherfly-configuration-build'
+	apply plugin: 'maven-publish'
+    apply plugin: 'signing'
 
 	sourceCompatibility = 1.7  
 	targetCompatibility = 1.7  
@@ -31,38 +28,15 @@ allprojects {
 	}
 
 	dependencies {
-	   /*
-	    compile 'cn.featherfly:featherfly-common:1.4.3'
+        /*
+        compile 'cn.featherfly:featherfly-common:1.4.3'
 	    compile 'cn.featherfly:featherfly-algorithm:1.0.2'    
 	    compile 'cn.featherfly:featherfly-persistence-jdbc:1.3.1'
 	    compile 'org.springframework:spring-context:4.1.6.RELEASE'
 	    compile 'org.springframework:spring-context-support:4.1.6.RELEASE'
 	    compile 'org.javassist:javassist:3.20.0-GA'
 	    compile 'org.springframework:spring-test:4.1.6.RELEASE'    
-	    
-	    persistenceCompile sourceSets.api.output
-	    persistenceCompile 'cn.featherfly:featherfly-persistence-jdbc:1.3.0'
-	    persistenceCompile 'org.springframework:spring-context:4.1.6.RELEASE'
-	    persistenceCompile 'org.springframework:spring-context-support:4.1.6.RELEASE'
-	    
-	    springCompile sourceSets.api.output
-	    springCompile sourceSets.persistence.output
-	    springCompile 'org.springframework:spring-context:4.1.6.RELEASE'
-	    springCompile 'org.springframework:spring-context-support:4.1.6.RELEASE'
-	    springCompile 'org.javassist:javassist:3.20.0-GA'
-	    
-	    dynamicCompile sourceSets.api.output
-	    dynamicCompile sourceSets.persistence.output
-	    dynamicCompile sourceSets.spring.output
-	    dynamicCompile 'cn.featherfly:featherfly-common:1.4.3'
-	    dynamicCompile 'cn.featherfly:featherfly-algorithm:1.0.2'    
-	    dynamicCompile 'cn.featherfly:featherfly-persistence-jdbc:1.3.0'
-	    dynamicCompile 'cn.featherfly:featherfly-persistence-jdbc:1.3.0'
-	    dynamicCompile 'org.springframework:spring-context:4.1.6.RELEASE'
-	    dynamicCompile 'org.springframework:spring-context-support:4.1.6.RELEASE'
-	    dynamicCompile 'org.javassist:javassist:3.20.0-GA'
 	    */
-	    
 	    testCompile (
 			'org.testng:testng:6.8.21'
 			,'org.springframework:spring-test:4.1.6.RELEASE'
@@ -73,52 +47,91 @@ allprojects {
 			,'mysql:mysql-connector-java:5.1.17'
 	    )
 	}
-    /*
-	sourceSets.all { set ->
-	    def jarTask = task("${set.name}Jar", type: Jar) {
-		baseName = baseName + "-$set.name"
-		from set.output
-	    }
-	    def sourcesTask = task("${set.name}SourcesJar", type: Jar) {
-		classifier "sources"
-		from set.java.srcDirs
-	    }
-	    def javadocTask = task("${set.name}JavadocJar", type: Jar, dependsOn:javadoc) {
-		classifier = "javadoc"        
-		from javadoc.destinationDir 
-	    }    
-	    artifacts {
-		archives jarTask
-		archives sourcesTask
-		archives javadocTask  
-	    }
-	    
-	    publishing {
-		publications {
-		    "${set.name}"(MavenPublication) {
-			artifactId archivesBaseName + "-$set.name"                
-			artifact jarTask
-			artifact (sourcesTask) {
-			    classifier "sources"
-			}
-			artifact (javadocTask) {
-			    classifier "javadoc"
-			}
-		    }
-		}        
-	    }
-	}
-    */
+	
+	tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+    tasks.withType(Javadoc) {
+        options.encoding = "UTF-8"
+    }
 
-    /*
-	def publishTask = task("publish-All-ToMavenLocal") {   
-	} << {
-		sourceSets.all { set ->
-		    def name = set.name.replaceFirst(String.valueOf(set.name.charAt(0)), String.valueOf(Character.toUpperCase(set.name.charAt(0))))
-		    //t.dependsOn(tasks.findByName("publish${name}PublicationToMavenLocal"))
-		}
+    task sourcesJar(type: Jar) {
+        classifier "sources"
+        from sourceSets.main.allJava
+    }
+    
+    task javadocJar(type: Jar, dependsOn:javadoc) { 
+         classifier = "javadoc"
+         from javadoc.destinationDir 
+    }
+    
+    artifacts {  
+        archives jar  
+        archives javadocJar  
+        archives sourcesJar  
+    }  
+     
+    
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                artifact (sourcesJar) {
+                    classifier "sources"
+                }
+                artifact (javadocJar) {
+                    classifier "javadoc"
+                }
+            }
+        }    
+    }
+
+    repositories {
+        mavenCentral()
+        maven {
+            url  ant.properties['user.home'] +  "/.m2/repository"
+        }
+    }
+	//为所有的jar包做数字签名  
+	signing {  
+	    sign configurations.archives  
+	}  
+	
+	uploadArchives {  
+	    repositories {
+	        mavenDeployer {  
+	            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) } 
+	            repository(url:"https://oss.sonatype.org/service/local/staging/deploy/maven2") {  
+	                authentication(userName: 'yufei', password: 'yufeimvn101')  
+	            }  
+	            pom.project {  
+	                name project.name  
+	                packaging 'jar'
+	                description 'common tool'  
+	                url 'https://github.com/featherfly/common.git'  
+	                scm {  
+	                    url 'scm:git@github.com:featherfly/common.git'  
+	                    connection 'scm:git@github.com:featherfly/common.git'  
+	                    developerConnection 'git@github.com:featherfly/common.git'  
+	                }  
+	                licenses {  
+	                    license {  
+	                        name 'The Apache Software License, Version 2.0'  
+	                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'  
+	                        distribution 'repo'  
+	                    }  
+	                }  
+	                developers {  
+	                    developer {  
+	                        id 'featherfly'  
+	                        name 'Yufei'
+	                    }  
+	                }  
+	            }  
+	        }  
+	    }  
 	}
-	*/
+	
 
 	jar {
 	    manifest.attributes 'Build-By': "zhong ji"
@@ -128,3 +141,47 @@ allprojects {
 	    manifest.attributes 'Build-Name': archivesBaseName
 	}
 }
+
+/*
+sourceSets.all { set ->
+    def jarTask = task("${set.name}Jar", type: Jar) {
+    baseName = baseName + "-$set.name"
+    from set.output
+    }
+    def sourcesTask = task("${set.name}SourcesJar", type: Jar) {
+    classifier "sources"
+    from set.java.srcDirs
+    }
+    def javadocTask = task("${set.name}JavadocJar", type: Jar, dependsOn:javadoc) {
+    classifier = "javadoc"        
+    from javadoc.destinationDir 
+    }    
+    artifacts {
+    archives jarTask
+    archives sourcesTask
+    archives javadocTask  
+    }
+    
+    publishing {
+    publications {
+        "${set.name}"(MavenPublication) {
+        artifactId archivesBaseName + "-$set.name"                
+        artifact jarTask
+        artifact (sourcesTask) {
+            classifier "sources"
+        }
+        artifact (javadocTask) {
+            classifier "javadoc"
+        }
+        }
+    }        
+    }
+}
+def publishTask = task("publish-All-ToMavenLocal") {   
+} << {
+    sourceSets.all { set ->
+        def name = set.name.replaceFirst(String.valueOf(set.name.charAt(0)), String.valueOf(Character.toUpperCase(set.name.charAt(0))))
+        //t.dependsOn(tasks.findByName("publish${name}PublicationToMavenLocal"))
+    }
+}
+*/

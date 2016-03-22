@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * 配置信息的注解.
+ * 配置项的注解.
  * </p>
  * @author 钟冀
  */
@@ -17,9 +17,16 @@ import java.lang.annotation.Target;
 public @interface Configuration {
 	/**
 	 * <p>
-	 * 该配置的描述.
+	 * 该配置项的名称.
+	 * </p>
+	 * @return 名称
+	 */
+	String name();
+	/**
+	 * <p>
+	 * 该配置项的描述.
 	 * </p>
 	 * @return 描述
 	 */
-	String value();
+	String descp();
 }

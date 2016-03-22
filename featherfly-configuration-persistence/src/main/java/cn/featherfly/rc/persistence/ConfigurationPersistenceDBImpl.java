@@ -1,5 +1,4 @@
-
-package cn.featherfly.rc.service;
+package cn.featherfly.rc.persistence;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -25,18 +24,18 @@ import cn.featherfly.rc.SimpleConfiguration;
  * 
  * @author 钟冀
  */
-public class ConfigurationService implements ConfigurationPersistence, ConfigurationValuePersistence{
+public class ConfigurationPersistenceDBImpl implements ConfigurationPersistence, ConfigurationValuePersistence{
     
     /**
      * 
      */
-    public ConfigurationService() {
+    public ConfigurationPersistenceDBImpl() {
         super();
     }
 
-    private static final String CONFIGURATION_DIFINITION_TABLE_NAME = "RC_CONFIGURATION_DIFINITION";
+    public static final String CONFIGURATION_DIFINITION_TABLE_NAME = "RC_CONFIGURATION_DIFINITION";
     
-    private static final String CONFIGURATION_VALUE_TABLE_NAME = "RC_CONFIGURATION_VALUE";
+    public static final String CONFIGURATION_VALUE_TABLE_NAME = "RC_CONFIGURATION_VALUE";
     
     private JdbcPersistence jdbcPersistence;
     

@@ -1,3 +1,4 @@
 rootProject.name = 'featherfly-configuration-build'
 includeFlat 'featherfly-configuration-api'
 includeFlat 'featherfly-configuration-dynamic'
+includeFlat 'featherfly-configuration-persistence'
