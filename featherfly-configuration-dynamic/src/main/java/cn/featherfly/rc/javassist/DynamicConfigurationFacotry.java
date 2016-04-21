@@ -7,11 +7,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import cn.featherfly.common.lang.ClassUtils;
-import cn.featherfly.common.lang.CollectionUtils;
-import cn.featherfly.common.lang.matcher.MethodNameRegexMatcher;
-import cn.featherfly.rc.ConfigurationValuePersistence;
 import javassist.CannotCompileException;
+import javassist.ClassClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtConstructor;
@@ -19,6 +16,10 @@ import javassist.CtField;
 import javassist.CtMethod;
 import javassist.Modifier;
 import javassist.NotFoundException;
+import cn.featherfly.common.lang.ClassUtils;
+import cn.featherfly.common.lang.CollectionUtils;
+import cn.featherfly.common.lang.matcher.MethodNameRegexMatcher;
+import cn.featherfly.rc.ConfigurationValuePersistence;
 
 /**
  * <p>
@@ -54,6 +55,7 @@ public class DynamicConfigurationFacotry {
         String dynamicClassName = type.getPackage().getName() + "._" + type.getSimpleName() + "DynamicImpl";
         if (!types.contains(type)) {
             ClassPool pool = ClassPool.getDefault();
+            pool.insertClassPath(new ClassClassPath(this.getClass()));
             CtClass dynamicImplClass = pool.makeClass(dynamicClassName);
             dynamicImplClass.setInterfaces(new CtClass[] {
                     pool.getCtClass(type.getName())});

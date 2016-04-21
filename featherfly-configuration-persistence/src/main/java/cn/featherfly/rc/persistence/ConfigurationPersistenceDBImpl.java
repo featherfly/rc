@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 
@@ -25,6 +26,8 @@ import cn.featherfly.rc.SimpleConfiguration;
  * @author 钟冀
  */
 public class ConfigurationPersistenceDBImpl implements ConfigurationPersistence, ConfigurationValuePersistence{
+    
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     
     /**
      * 
@@ -54,6 +57,27 @@ public class ConfigurationPersistenceDBImpl implements ConfigurationPersistence,
         }
         return value;
     }
+    
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    @CachePut(value = "configurationCache", key = "'config:'+ #configName + ':' + #name"
+//    , cacheManager = "configurationCacheManager")
+//    public <V extends Serializable> V init(String configName, String name,
+//            V value, String descp) {
+//        if (jdbcPersistence.findForString(String.format("select name from %s where config_name = ? and name = ?"
+//                , CONFIGURATION_VALUE_TABLE_NAME), new Object[] {configName, name}) == null) {
+//            logger.debug("init configuration({}) value -> name : {}, value : {}, descp : {}"
+//                    , configName, name, value, descp);
+//            String sql = String.format("insert %s (config_name, name, value, descp) values (?, ?, ?, ?)"
+//                    , CONFIGURATION_VALUE_TABLE_NAME);
+//            jdbcPersistence.execute(sql, new Object[] {configName, name, value, descp});            
+//        } else {
+//            logger.debug("configuration（{}.{}） already inited", configName, name);
+//        }
+//        return value;
+//    }
 
     /**
      * {@inheritDoc}
@@ -103,5 +127,19 @@ public class ConfigurationPersistenceDBImpl implements ConfigurationPersistence,
         return configuration;
     }
 
-    
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public void init(String name, String descp) {
+//        if (jdbcPersistence.findForString(String.format("select name from %s where name = ?"
+//                , CONFIGURATION_DIFINITION_TABLE_NAME), new Object[] {name}) == null) {
+//            logger.debug("init configuration difinition -> name : {} , descp : {}", name, descp);
+//            String sql = String.format("insert %s (name, descp) values (?, ?)"
+//                    , CONFIGURATION_DIFINITION_TABLE_NAME);
+//            jdbcPersistence.execute(sql, new Object[] {name , descp});
+//        } else {
+//            logger.debug("configuration difinition -> name : {} already inited", name);
+//        }
+//    }    
 }

@@ -3,6 +3,9 @@ package cn.featherfly.rc.spring;
 import java.util.HashSet;
 import java.util.Set;
 
+import javassist.CannotCompileException;
+import javassist.NotFoundException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -18,8 +21,6 @@ import cn.featherfly.common.io.ClassPathScanningProvider;
 import cn.featherfly.common.lang.ClassUtils;
 import cn.featherfly.rc.annotation.ConfigurationDifinition;
 import cn.featherfly.rc.javassist.DynamicConfigurationFacotry;
-import javassist.CannotCompileException;
-import javassist.NotFoundException;
 
 /**
  * <p>
@@ -40,7 +41,7 @@ public class DynamicConfigurationSpringRegist implements BeanDefinitionRegistryP
     private DynamicConfigurationFacotry dynamicConfigurationFacotry = DynamicConfigurationFacotry.getInstance(); 
     
     private String configurationValuePersistenceReference;
-
+    
     /**
      * @param basePackages
      * @param configurationValuePersistenceReference
@@ -65,17 +66,16 @@ public class DynamicConfigurationSpringRegist implements BeanDefinitionRegistryP
     @Override
     public void postProcessBeanDefinitionRegistry(
             BeanDefinitionRegistry registry) throws BeansException {
-        logger.debug("start regist config to spring");
         Set<MetadataReader> metadataReaders = new ClassPathScanningProvider().findMetadata(
                 basePackages.toArray(new String[] {}));
         for (MetadataReader metadataReader : metadataReaders) {
             if (metadataReader.getAnnotationMetadata().hasAnnotation(ConfigurationDifinition.class.getName())) {
-                try {
+                try {                    
                     Class<?> type = ClassUtils.forName(metadataReader.getClassMetadata().getClassName());
                     String configName = ((ConfigurationDifinition) type.getAnnotation(
                             ConfigurationDifinition.class)).name();
                     String dynamicImplName = dynamicConfigurationFacotry.create(type);
-                    logger.debug("create class {} for {}", dynamicImplName, metadataReader.getClass().getName());
+                    logger.debug("create class {} for {}", dynamicImplName, type.getName());
                     logger.debug("regist -> {} for config named {}", dynamicImplName, configName);
                     BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(ClassUtils.forName(dynamicImplName));
                     builder.addConstructorArgValue(configName);
@@ -87,6 +87,6 @@ public class DynamicConfigurationSpringRegist implements BeanDefinitionRegistryP
                 }
             }
         }
-        logger.debug("end regist constant to spring");                
+        logger.debug("end regist configuration to spring");                
     }
 }

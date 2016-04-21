@@ -13,8 +13,10 @@ import cn.featherfly.rc.annotation.ConfigurationDifinition;
  */
 @ConfigurationDifinition(name = "test", descp = "描述")
 public interface TestConfig {
-    
-    public Integer getAge();
+        
+    public default Integer getAge() {
+        return 18;
+    }
     
     public TestConfig setAge(Integer age);
     

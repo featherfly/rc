@@ -1,11 +1,17 @@
 
 package cn.featherfly.rc;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import javax.annotation.Resource;
 
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.springframework.util.SocketUtils;
 import org.testng.annotations.Test;
+
+import cn.featherfly.common.lang.ClassUtils;
 /**
  * <p>
  * AppRun
@@ -31,6 +37,15 @@ public class AppRun extends AbstractTestNGSpringContextTests {
     }
     @Test
     public void test2() {
+        
+    }
+    
+    public static void main(String[] args) throws Exception {
+        for (Method method : TestConfig.class.getMethods()) {
+            System.out.println(method.isDefault());
+            if (method.isDefault()) {
+            }
+        }
         
     }
 }

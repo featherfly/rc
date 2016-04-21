@@ -10,7 +10,8 @@ import java.util.Collection;
  * 
  * @author 钟冀
  */
-public interface ConfigurationPersistence {
+public interface ConfigurationPersistence {    
+//    void init(String name, String descp);
     /**
      * <p>
      * 获取配置信息对象集合
