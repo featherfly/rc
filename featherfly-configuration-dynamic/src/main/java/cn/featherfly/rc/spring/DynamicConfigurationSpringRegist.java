@@ -81,7 +81,8 @@ public class DynamicConfigurationSpringRegist implements BeanDefinitionRegistryP
                     builder.addConstructorArgValue(configName);
                     builder.addConstructorArgReference(configurationValuePersistenceReference);
                     builder.setScope(BeanDefinition.SCOPE_SINGLETON);
-                    registry.registerBeanDefinition(type.getName(), builder.getBeanDefinition());
+//                    registry.registerBeanDefinition(type.getName(), builder.getBeanDefinition());
+                    registry.registerBeanDefinition(configName, builder.getBeanDefinition());
                 } catch (NotFoundException | CannotCompileException e) {
                     throw new StandardSysException(e);
                 }
