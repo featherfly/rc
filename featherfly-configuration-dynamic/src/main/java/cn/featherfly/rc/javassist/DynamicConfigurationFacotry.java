@@ -7,6 +7,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import cn.featherfly.common.lang.ClassUtils;
+import cn.featherfly.common.lang.CollectionUtils;
+import cn.featherfly.common.lang.matcher.MethodNameRegexMatcher;
+import cn.featherfly.rc.ConfigurationValuePersistence;
 import javassist.CannotCompileException;
 import javassist.ClassClassPath;
 import javassist.ClassPool;
@@ -16,31 +20,27 @@ import javassist.CtField;
 import javassist.CtMethod;
 import javassist.Modifier;
 import javassist.NotFoundException;
-import cn.featherfly.common.lang.ClassUtils;
-import cn.featherfly.common.lang.CollectionUtils;
-import cn.featherfly.common.lang.matcher.MethodNameRegexMatcher;
-import cn.featherfly.rc.ConfigurationValuePersistence;
 
 /**
  * <p>
  * DynamicConfigFacotry
  * </p>
- * 
+ *
  * @author 钟冀
  */
 public class DynamicConfigurationFacotry {
-    
+
     private Set<Class<?>> types = new HashSet<>();
-    
+
     private static final DynamicConfigurationFacotry INSTANCE = new DynamicConfigurationFacotry();
-    
+
     /**
-     * 
+     *
      */
     public DynamicConfigurationFacotry() {
         super();
     }
-    
+
     /**
      * <p>
      * 方法的说明
@@ -61,7 +61,7 @@ public class DynamicConfigurationFacotry {
                     pool.getCtClass(type.getName())});
             CtField nameField = new CtField(pool.getCtClass(String.class.getName()), "name", dynamicImplClass);
             nameField.setModifiers(Modifier.PRIVATE);
-            dynamicImplClass.addField(nameField);        
+            dynamicImplClass.addField(nameField);
             CtField configurationValuePersistenceField = new CtField(pool.getCtClass(
                     ConfigurationValuePersistence.class.getName()), "configurationValuePersistence", dynamicImplClass);
             configurationValuePersistenceField.setModifiers(Modifier.PRIVATE);
@@ -71,19 +71,19 @@ public class DynamicConfigurationFacotry {
                             pool.getCtClass(String.class.getName()),
                             pool.getCtClass(ConfigurationValuePersistence.class.getName())
                     }, dynamicImplClass);
-            constraConstructor.setModifiers(Modifier.PUBLIC);        
+            constraConstructor.setModifiers(Modifier.PUBLIC);
             constraConstructor.setBody("{this.name=$1;this.configurationValuePersistence=$2;}");
             dynamicImplClass.addConstructor(constraConstructor);
-            
-            
+
+
             Collection<Method> getMethods = ClassUtils.findMethods(type, new MethodNameRegexMatcher("get.+"));
             Collection<Method> setMethods = ClassUtils.findMethods(type, new MethodNameRegexMatcher("set.+"));
             for (Method getMethod : getMethods) {
-                CtMethod ctMethod = new CtMethod(pool.getCtClass(getMethod.getReturnType().getName()), getMethod.getName()
+                CtMethod ctMethod = new CtMethod(pool.getCtClass(getMethod.getReturnType().getTypeName()), getMethod.getName()
                         , new CtClass[] {}
-                        , dynamicImplClass);
+                , dynamicImplClass);
                 ctMethod.setBody(String.format("{return (%2$s) configurationValuePersistence.get(name, \"%s\", %s.class);}"
-                        , ClassUtils.getPropertyName(getMethod), getMethod.getReturnType().getName()));
+                        , ClassUtils.getPropertyName(getMethod), getMethod.getReturnType().getTypeName()));
                 ctMethod.setModifiers(Modifier.PUBLIC);
                 dynamicImplClass.addMethod(ctMethod);
             }
@@ -92,7 +92,7 @@ public class DynamicConfigurationFacotry {
                 for (Class<?> paramType : setMethod.getParameterTypes()) {
                     params.add(pool.getCtClass(paramType.getName()));
                 }
-                CtMethod ctMethod = new CtMethod(pool.getCtClass(setMethod.getReturnType().getName()), setMethod.getName()
+                CtMethod ctMethod = new CtMethod(pool.getCtClass(setMethod.getReturnType().getTypeName()), setMethod.getName()
                         , CollectionUtils.toArray(params, CtClass.class)
                         , dynamicImplClass);
                 ctMethod.setBody(String.format("{configurationValuePersistence.set(name, \"%s\", $1);return this;}"
