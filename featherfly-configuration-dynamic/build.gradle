@@ -1,6 +1,5 @@
 dependencies {
     compile project(':featherfly-configuration-api')    
-    compile 'cn.featherfly:featherfly-common:1.6.0'    
-    compile 'org.springframework:spring-context:4.3.7.RELEASE'    
+    compile 'org.springframework:spring-context:5.1.8.RELEASE'    
     compile 'org.javassist:javassist:3.21.0-GA'
 }

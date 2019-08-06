@@ -1,3 +1,2 @@
 dependencies {
-    compile 'cn.featherfly:featherfly-common:1.6.0'    
 }
