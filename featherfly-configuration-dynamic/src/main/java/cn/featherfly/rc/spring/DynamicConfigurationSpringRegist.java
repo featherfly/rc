@@ -42,8 +42,8 @@ public class DynamicConfigurationSpringRegist implements BeanDefinitionRegistryP
     private String configurationValuePersistenceReference;
 
     /**
-     * @param basePackages
-     * @param configurationValuePersistenceReference
+     * @param basePackages                           basePackages
+     * @param configurationValuePersistenceReference configurationValuePersistenceReference
      */
     public DynamicConfigurationSpringRegist(Set<String> basePackages, String configurationValuePersistenceReference) {
         super();

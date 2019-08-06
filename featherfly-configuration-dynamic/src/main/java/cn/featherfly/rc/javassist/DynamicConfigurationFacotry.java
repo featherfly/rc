@@ -46,7 +46,7 @@ public class DynamicConfigurationFacotry {
      * 方法的说明
      * </p>
      *
-     * @return
+     * @return DynamicConfigurationFacotry
      */
     public static DynamicConfigurationFacotry getInstance() {
         return INSTANCE;
@@ -58,7 +58,7 @@ public class DynamicConfigurationFacotry {
             ClassPool pool = ClassPool.getDefault();
             pool.insertClassPath(new ClassClassPath(this.getClass()));
             CtClass dynamicImplClass = pool.makeClass(dynamicClassName);
-            dynamicImplClass.setInterfaces(new CtClass[] {pool.getCtClass(type.getName())});
+            dynamicImplClass.setInterfaces(new CtClass[] { pool.getCtClass(type.getName()) });
             CtField nameField = new CtField(pool.getCtClass(String.class.getName()), "name", dynamicImplClass);
             nameField.setModifiers(Modifier.PRIVATE);
             dynamicImplClass.addField(nameField);
@@ -67,8 +67,10 @@ public class DynamicConfigurationFacotry {
                     dynamicImplClass);
             configurationValuePersistenceField.setModifiers(Modifier.PRIVATE);
             dynamicImplClass.addField(configurationValuePersistenceField);
-            CtConstructor constraConstructor = new CtConstructor(new CtClass[] {pool.getCtClass(String.class.getName()),
-                    pool.getCtClass(ConfigurationValuePersistence.class.getName())}, dynamicImplClass);
+            CtConstructor constraConstructor = new CtConstructor(
+                    new CtClass[] { pool.getCtClass(String.class.getName()),
+                            pool.getCtClass(ConfigurationValuePersistence.class.getName()) },
+                    dynamicImplClass);
             constraConstructor.setModifiers(Modifier.PUBLIC);
             constraConstructor.setBody("{this.name=$1;this.configurationValuePersistence=$2;}");
             dynamicImplClass.addConstructor(constraConstructor);
@@ -78,8 +80,9 @@ public class DynamicConfigurationFacotry {
             for (Method getMethod : getMethods) {
                 CtMethod ctMethod = new CtMethod(pool.getCtClass(getMethod.getReturnType().getTypeName()),
                         getMethod.getName(), new CtClass[] {}, dynamicImplClass);
-                ctMethod.setBody(String.format("{return (%2$s) configurationValuePersistence.get(name, \"%s\", %2$s.class);}"
-                        , ClassUtils.getPropertyName(getMethod), getMethod.getReturnType().getTypeName()));
+                ctMethod.setBody(
+                        String.format("{return (%2$s) configurationValuePersistence.get(name, \"%s\", %2$s.class);}",
+                                ClassUtils.getPropertyName(getMethod), getMethod.getReturnType().getTypeName()));
                 ctMethod.setModifiers(Modifier.PUBLIC);
                 dynamicImplClass.addMethod(ctMethod);
             }
