@@ -1,5 +1,6 @@
 dependencies {
     compile project(':featherfly-configuration-api')    
-    compile 'cn.featherfly:featherfly-persistence-jdbc:1.4.0'    
+    compile 'cn.featherfly:featherfly-persistence-jdbc:1.4.1'    
     compile 'org.springframework:spring-context:5.1.8.RELEASE'
+    compile 'cn.featherfly:featherfly-conversion-jdk8:1.0.0'
 }
