@@ -1,6 +1,5 @@
 allprojects {
-	apply plugin: 'java'
-    
+    apply plugin: 'java'
     apply from: '../featherfly-configuration-build/gradle/java_base.gradle'
     apply from: '../featherfly-configuration-build/gradle/maven_push.gradle'
 
