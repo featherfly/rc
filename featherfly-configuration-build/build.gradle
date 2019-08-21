@@ -7,7 +7,7 @@ allprojects {
 	targetCompatibility = 1.8 
 
 	dependencies {
-        compile 'cn.featherfly:featherfly-common:1.7.5'
+        compile 'cn.featherfly:featherfly-common:1.7.6'
         /*
 	    compile 'cn.featherfly:featherfly-algorithm:1.0.2'
 	    */
