@@ -7,7 +7,7 @@ allprojects {
 	targetCompatibility = 1.8 
 
 	dependencies {
-        compile 'cn.featherfly:featherfly-common:1.7.5'
+        compile 'cn.featherfly:featherfly-common:1.7.8'
         /*
 	    compile 'cn.featherfly:featherfly-algorithm:1.0.2'
 	    */
@@ -15,11 +15,11 @@ allprojects {
 			'org.testng:testng:6.8.21'
 			,'org.springframework:spring-test:5.1.8.RELEASE'
 			,'dom4j:dom4j:1.6.1'
-			,'org.slf4j:slf4j-log4j12:1.6.1'
-			,'log4j:log4j:1.2.16'
 			,'commons-dbcp:commons-dbcp:1.4'
 			,'mysql:mysql-connector-java:5.1.17'
 	    )
+	    testCompile 'org.slf4j:slf4j-log4j12:1.7.28'
+        testCompile 'log4j:log4j:1.2.17'
 	}
 	
 	

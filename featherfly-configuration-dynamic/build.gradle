@@ -1,5 +1,9 @@
 dependencies {
     compile project(':featherfly-configuration-api')    
+    compile 'cn.featherfly:featherfly-common-spring:0.1.0'    
     compile 'org.springframework:spring-context:5.1.8.RELEASE'    
     compile group: 'org.javassist', name: 'javassist', version: '3.25.0-GA'
+    
+    testCompile project(':featherfly-configuration-persistence')
+    testCompile project(':featherfly-configuration-persistence')
 }
