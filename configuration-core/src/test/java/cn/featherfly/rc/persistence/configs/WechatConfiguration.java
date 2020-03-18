@@ -1,4 +1,4 @@
-package cn.featherfly.rc;
+package cn.featherfly.rc.persistence.configs;
 
 import cn.featherfly.rc.annotation.ConfigurationDifinition;
 

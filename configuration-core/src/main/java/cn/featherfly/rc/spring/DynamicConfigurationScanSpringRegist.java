@@ -2,7 +2,7 @@ package cn.featherfly.rc.spring;
 
 import java.util.Set;
 
-import cn.featherfly.common.io.ClassPathScanningProvider;
+import cn.featherfly.rc.ConfigurationManager;
 
 /**
  * <p>
@@ -19,7 +19,7 @@ public class DynamicConfigurationScanSpringRegist extends DynamicConfigurationSp
      */
     public DynamicConfigurationScanSpringRegist(Set<String> basePackages,
             String configurationValuePersistenceReference) {
-        super(new ClassPathScanningProvider().findMetadata(basePackages.toArray(new String[] {})),
+        super(ConfigurationManager.getInstance().scanConfigurations(basePackages.toArray(new String[] {})),
                 configurationValuePersistenceReference);
     }
 

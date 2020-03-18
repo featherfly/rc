@@ -1,8 +1,14 @@
-dependencies {
-    compile project(':configuration-core')    
-    compile 'cn.featherfly.common:common-spring:0.2.1'    
-    //compile 'org.springframework:spring-context:5.2.1.RELEASE'    
-    
-    
-    testCompile project(':configuration-persistence')
+plugins {
+  id "net.ltgt.apt-eclipse" version "0.21"
 }
+
+dependencies {
+    //compile project(':configuration-core')    
+    compile 'cn.featherfly.common:common-spring:0.2.1'    
+    //compile 'org.springframework:spring-context:5.2.1.RELEASE'
+    
+    // testCompile project(':configuration-persistence')
+    compile 'cn.featherfly.configuration:configuration-core:1.2.0'
+    annotationProcessor 'cn.featherfly.configuration:configuration-core:1.2.0'    
+}
+compileJava.options.compilerArgs << "-processor" << "cn.featherfly.rc.apt.ConfigurationProcessor"

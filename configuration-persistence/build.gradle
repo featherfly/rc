@@ -1,9 +1,10 @@
 dependencies {
     compile project(':configuration-api')
-    compile 'cn.featherfly.hammer:hammer-sqldb:0.3.1'    
-    compile 'cn.featherfly:featherfly-persistence-jdbc:1.4.2'    
-    //compile 'org.springframework:spring-context:5.2.1.RELEASE'
     compile 'cn.featherfly:featherfly-conversion:1.3.4'    
-    compile 'cn.featherfly.common:common-spring:0.2.1'
+    compile 'cn.featherfly.hammer:hammer-sqldb:0.3.1'    
+    //compile 'cn.featherfly:featherfly-persistence-jdbc:1.4.2'    
+    //compile 'org.springframework:spring-context:5.2.1.RELEASE'
+    //compile 'cn.featherfly.common:common-spring:0.2.1'
     
+    testCompile project(':configuration-core')    
 }

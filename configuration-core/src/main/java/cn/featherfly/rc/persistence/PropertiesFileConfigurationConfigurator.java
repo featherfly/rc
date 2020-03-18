@@ -60,17 +60,18 @@ public class PropertiesFileConfigurationConfigurator {
     private String projectName;
 
     /**
-     *
+     * @param projectName     projectName
+     * @param metadataReaders metadataReaders
      */
     public PropertiesFileConfigurationConfigurator(String projectName, Set<MetadataReader> metadataReaders) {
         this(projectName, FilePolicy.EACH_FILE_FOR_DEFINE, DirPolicy.USER_DIR, metadataReaders);
     }
 
     /**
-     * @param filePolicy
-     * @param dirPolicy
-     * @param conversion
-     * @param metadataReaders
+     * @param projectName     projectName
+     * @param filePolicy      filePolicy
+     * @param dirPolicy       dirPolicy
+     * @param metadataReaders metadataReaders
      */
     public PropertiesFileConfigurationConfigurator(String projectName, FilePolicy filePolicy, DirPolicy dirPolicy,
             Set<MetadataReader> metadataReaders) {
@@ -153,6 +154,10 @@ public class PropertiesFileConfigurationConfigurator {
         // throw new ConfigurationException(e);
         // }
         // }
+    }
+
+    public File getConfigFile(String config) {
+        return configFileMap.get(config);
     }
 
     private String getConfigNameDescpKey(String configName) {

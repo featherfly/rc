@@ -1,5 +1,5 @@
 
-package cn.featherfly.rc;
+package cn.featherfly.rc.persistence;
 
 import java.util.Set;
 
@@ -9,8 +9,7 @@ import org.testng.annotations.Test;
 
 import cn.featherfly.common.io.ClassPathScanningProvider;
 import cn.featherfly.rc.javassist.DynamicConfigurationFacotry;
-import cn.featherfly.rc.persistence.ConfigurationPersistenceFileImpl;
-import cn.featherfly.rc.persistence.PropertiesFileConfigurationConfigurator;
+import cn.featherfly.rc.persistence.configs.WechatConfiguration;
 
 /**
  * <p>

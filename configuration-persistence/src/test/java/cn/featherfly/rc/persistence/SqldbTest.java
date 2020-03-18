@@ -1,5 +1,5 @@
 
-package cn.featherfly.rc;
+package cn.featherfly.rc.persistence;
 
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
@@ -18,6 +18,7 @@ import org.testng.annotations.Test;
 
 import cn.featherfly.common.db.SqlExecutor;
 import cn.featherfly.common.lang.ClassLoaderUtils;
+import cn.featherfly.rc.persistence.config1.UserConfig2;
 
 /**
  * <p>
@@ -30,7 +31,7 @@ import cn.featherfly.common.lang.ClassLoaderUtils;
 public class SqldbTest extends AbstractTestNGSpringContextTests {
 
     @Resource
-    private TestConfig testConfig;
+    private UserConfig2 userConfig;
 
     @Resource
     private DataSource dataSource;
@@ -43,18 +44,18 @@ public class SqldbTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void test() {
-        testConfig.setAge(28);
-        testConfig.setName("yufei");
-        System.out.println(testConfig.getName());
-        System.out.println(testConfig.getAge());
+        userConfig.setAge(28);
+        userConfig.setName("yufei");
+        System.out.println(userConfig.getName());
+        System.out.println(userConfig.getAge());
     }
 
     @Test
     public void test2() {
-        System.out.println(testConfig.getName());
-        System.out.println(testConfig.getAge());
-        assertTrue(testConfig.getAge() == 18);
-        assertNull(testConfig.getName());
+        System.out.println(userConfig.getName());
+        System.out.println(userConfig.getAge());
+        assertTrue(userConfig.getAge() == 18);
+        assertNull(userConfig.getName());
 
     }
 }

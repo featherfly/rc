@@ -1,5 +1,5 @@
 
-package cn.featherfly.rc;
+package cn.featherfly.rc.persistence;
 
 import java.util.HashSet;
 import java.util.Set;

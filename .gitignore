@@ -2,9 +2,11 @@ gradle/
 gradlew
 gradlew.bat
 .settings/
+.sts4-cache/
 bin/
 build/
 .gradle/
 .classpath
 .project
 .checkstyle
+.factorypath
