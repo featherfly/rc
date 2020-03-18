@@ -1,0 +1,8 @@
+dependencies {
+    compile project(':configuration-core')    
+    compile 'cn.featherfly.common:common-spring:0.2.1'    
+    //compile 'org.springframework:spring-context:5.2.1.RELEASE'    
+    
+    
+    testCompile project(':configuration-persistence')
+}

@@ -1,0 +1,5 @@
+rootProject.name = 'configuration-build'
+includeFlat 'configuration-api'
+includeFlat 'configuration-core'
+includeFlat 'configuration-dynamic'
+includeFlat 'configuration-persistence'
