@@ -28,6 +28,16 @@ public class Config {
     }
 
     /**
+     * @param name
+     * @param value
+     */
+    public Config(String name, String value) {
+        super();
+        this.name = name;
+        this.value = value;
+    }
+
+    /**
      * 返回name
      *
      * @return name
@@ -105,7 +115,7 @@ public class Config {
 
     /**
      * 返回configDescp
-     * 
+     *
      * @return configDescp
      */
     public String getConfigDescp() {
@@ -114,7 +124,7 @@ public class Config {
 
     /**
      * 设置configDescp
-     * 
+     *
      * @param configDescp configDescp
      */
     public Config setConfigDescp(String configDescp) {

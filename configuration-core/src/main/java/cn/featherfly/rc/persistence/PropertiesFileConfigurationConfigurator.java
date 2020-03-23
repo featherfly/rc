@@ -3,6 +3,7 @@ package cn.featherfly.rc.persistence;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -14,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 
-import cn.featherfly.common.constant.Charset;
 import cn.featherfly.common.lang.AssertIllegalArgument;
 import cn.featherfly.common.lang.ClassUtils;
 import cn.featherfly.common.lang.LangUtils;
@@ -39,7 +39,8 @@ public class PropertiesFileConfigurationConfigurator {
     private Map<String, Properties> propertiesMap = new HashMap<>();
 
     public enum FilePolicy {
-        EACH_FILE_FOR_DEFINE, EACH_FILE_FOR_DEFINE_IN_PACKAGE
+        EACH_FILE_FOR_DEFINE,
+        EACH_FILE_FOR_DEFINE_IN_PACKAGE
         //        , ALL_IN_ONE_FILE
     }
 
@@ -111,7 +112,7 @@ public class PropertiesFileConfigurationConfigurator {
                             if (LangUtils.isNotEmpty(descp)) {
                                 properties.setProperty(getConfigNameDescpKey(configName), descp);
                             }
-                            properties.store(new FileWriterWithEncoding(file, Charset.UTF_8), configName);
+                            properties.store(new FileWriterWithEncoding(file, StandardCharsets.UTF_8), configName);
                             // configMap.put(configName, properties);
                             logger.debug("create file {} for {}", file.getAbsolutePath(), type.getName());
                         } catch (IOException e) {
@@ -166,7 +167,7 @@ public class PropertiesFileConfigurationConfigurator {
 
     private void createFile(File file, String configName) {
         try {
-            org.apache.commons.io.FileUtils.write(file, "", Charset.UTF_8);
+            org.apache.commons.io.FileUtils.write(file, "", StandardCharsets.UTF_8);
         } catch (IOException e) {
             // FIXME 需要更精确的异常描述
             logger.error(e.getMessage());
@@ -219,18 +220,21 @@ public class PropertiesFileConfigurationConfigurator {
         this.dirPolicy = dirPolicy;
     }
 
-    public PropertiesFileConfigurationConfigurator setConfig(String configName, Config config) {
+    public PropertiesFileConfigurationConfigurator setConfig(String configName, Config... configs) {
         Properties properties = loadConfig(configName);
-        try {
+        for (Config config : configs) {
             properties.setProperty(config.getName(), config.getValue());
             if (LangUtils.isNotEmpty(config.getDescp())) {
                 properties.setProperty(getDescpKey(config.getName()), config.getDescp());
             }
-            properties.store(new FileWriterWithEncoding(configFileMap.get(configName), Charset.UTF_8), configName);
-            propertiesMap.put(configName, properties);
-        } catch (IOException e) {
-            throw new ConfigurationException(String.format("为%s的%s设置值%s时发生错误%s", configName, config.getName(),
-                    config.getValue(), e.getMessage()));
+            try {
+                properties.store(new FileWriterWithEncoding(configFileMap.get(configName), StandardCharsets.UTF_8),
+                        configName);
+                propertiesMap.put(configName, properties);
+            } catch (IOException e) {
+                throw new ConfigurationException(String.format("为%s的%s设置值%s时发生错误%s", configName, config.getName(),
+                        config.getValue(), e.getMessage()));
+            }
         }
         return this;
     }

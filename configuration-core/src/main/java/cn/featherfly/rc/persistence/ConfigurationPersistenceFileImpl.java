@@ -3,6 +3,7 @@ package cn.featherfly.rc.persistence;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +58,19 @@ public class ConfigurationPersistenceFileImpl implements ConfigurationPersistenc
         config.setName(name);
         config.setValue(conversion.toString(value, new GenericClass<>(value.getClass())));
         configurator.setConfig(configName, config);
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <V> ConfigurationValuePersistence set(String configName, Map<String, V> configNameValueMap) {
+        configurator.setConfig(configName,
+                configNameValueMap.entrySet().stream()
+                        .map(e -> new Config(e.getKey(),
+                                conversion.toString(e.getValue(), new GenericClass<>(e.getValue().getClass()))))
+                        .toArray(value -> new Config[configNameValueMap.size()]));
         return this;
     }
 
