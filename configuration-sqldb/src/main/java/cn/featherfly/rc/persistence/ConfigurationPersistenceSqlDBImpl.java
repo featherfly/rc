@@ -70,6 +70,15 @@ public class ConfigurationPersistenceSqlDBImpl implements ConfigurationPersisten
     /**
      * {@inheritDoc}
      */
+    @Override
+    public <V> ConfigurationValuePersistence set(String configName, Map<String, V> configNameValueMap) {
+        configNameValueMap.entrySet().forEach(e -> set(configName, e.getKey(), e.getValue()));
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     @Override
     @Cacheable(value = { "configurationCache" }, key = "'config:'+ #configName + ':' + #name")
@@ -144,7 +153,7 @@ public class ConfigurationPersistenceSqlDBImpl implements ConfigurationPersisten
 
     /**
      * 返回hammer
-     * 
+     *
      * @return hammer
      */
     public Hammer getHammer() {
@@ -153,7 +162,7 @@ public class ConfigurationPersistenceSqlDBImpl implements ConfigurationPersisten
 
     /**
      * 设置hammer
-     * 
+     *
      * @param hammer hammer
      */
     public void setHammer(Hammer hammer) {
@@ -162,7 +171,7 @@ public class ConfigurationPersistenceSqlDBImpl implements ConfigurationPersisten
 
     /**
      * 返回conversion
-     * 
+     *
      * @return conversion
      */
     public TypeConversion getConversion() {
@@ -171,7 +180,7 @@ public class ConfigurationPersistenceSqlDBImpl implements ConfigurationPersisten
 
     /**
      * 设置conversion
-     * 
+     *
      * @param conversion conversion
      */
     public void setConversion(TypeConversion conversion) {
