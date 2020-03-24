@@ -1,8 +1,8 @@
 package cn.featherfly.rc.persistence.configs;
 
-import cn.featherfly.rc.annotation.ConfigurationDifinition;
+import cn.featherfly.rc.annotation.Configurations;
 
-@ConfigurationDifinition(name = "wechat", descp = "描述")
+@Configurations(name = "wechat", descp = "描述")
 public interface WechatConfiguration {
 
     Boolean getAllowAutoRegist();

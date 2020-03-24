@@ -10,7 +10,7 @@ import org.springframework.core.type.classreading.MetadataReader;
 
 import cn.featherfly.common.io.ClassPathScanningProvider;
 import cn.featherfly.common.lang.ClassUtils;
-import cn.featherfly.rc.annotation.ConfigurationDifinition;
+import cn.featherfly.rc.annotation.Configurations;
 
 /**
  * <p>
@@ -38,7 +38,7 @@ public class ConfigurationManager {
     public Set<MetadataReader> getConfigurations(Set<MetadataReader> metadataReaders) {
         Set<MetadataReader> configurations = new HashSet<>();
         for (MetadataReader metadataReader : metadataReaders) {
-            if (metadataReader.getAnnotationMetadata().hasAnnotation(ConfigurationDifinition.class.getName())) {
+            if (metadataReader.getAnnotationMetadata().hasAnnotation(Configurations.class.getName())) {
                 check(metadataReader);
                 configurations.add(metadataReader);
             }
@@ -58,7 +58,7 @@ public class ConfigurationManager {
 
     private void check(MetadataReader metadataReader) {
         Class<?> type = ClassUtils.forName(metadataReader.getClassMetadata().getClassName());
-        String configName = type.getAnnotation(ConfigurationDifinition.class).name();
+        String configName = type.getAnnotation(Configurations.class).name();
         if (configNameTypeMap.containsKey(configName)) {
             ConfigurationException.throwConfigDuplicateKey(configName, configNameTypeMap.get(configName),
                     type.getName());

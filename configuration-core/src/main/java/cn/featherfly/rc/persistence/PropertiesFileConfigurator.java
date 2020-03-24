@@ -19,7 +19,7 @@ import cn.featherfly.common.lang.AssertIllegalArgument;
 import cn.featherfly.common.lang.ClassUtils;
 import cn.featherfly.common.lang.LangUtils;
 import cn.featherfly.rc.ConfigurationException;
-import cn.featherfly.rc.annotation.ConfigurationDifinition;
+import cn.featherfly.rc.annotation.Configurations;
 
 /**
  * <p>
@@ -28,7 +28,7 @@ import cn.featherfly.rc.annotation.ConfigurationDifinition;
  *
  * @author 钟冀
  */
-public class PropertiesFileConfigurationConfigurator {
+public class PropertiesFileConfigurator {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -64,7 +64,7 @@ public class PropertiesFileConfigurationConfigurator {
      * @param projectName     projectName
      * @param metadataReaders metadataReaders
      */
-    public PropertiesFileConfigurationConfigurator(String projectName, Set<MetadataReader> metadataReaders) {
+    public PropertiesFileConfigurator(String projectName, Set<MetadataReader> metadataReaders) {
         this(projectName, FilePolicy.EACH_FILE_FOR_DEFINE, DirPolicy.USER_DIR, metadataReaders);
     }
 
@@ -74,7 +74,7 @@ public class PropertiesFileConfigurationConfigurator {
      * @param dirPolicy       dirPolicy
      * @param metadataReaders metadataReaders
      */
-    public PropertiesFileConfigurationConfigurator(String projectName, FilePolicy filePolicy, DirPolicy dirPolicy,
+    public PropertiesFileConfigurator(String projectName, FilePolicy filePolicy, DirPolicy dirPolicy,
             Set<MetadataReader> metadataReaders) {
         super();
         AssertIllegalArgument.isNotNull(projectName, "projectName");
@@ -92,10 +92,10 @@ public class PropertiesFileConfigurationConfigurator {
         }
         if (filePolicy == FilePolicy.EACH_FILE_FOR_DEFINE || filePolicy == FilePolicy.EACH_FILE_FOR_DEFINE_IN_PACKAGE) {
             for (MetadataReader metadataReader : metadataReaders) {
-                if (metadataReader.getAnnotationMetadata().hasAnnotation(ConfigurationDifinition.class.getName())) {
+                if (metadataReader.getAnnotationMetadata().hasAnnotation(Configurations.class.getName())) {
                     Class<?> type = ClassUtils.forName(metadataReader.getClassMetadata().getClassName());
-                    String configName = type.getAnnotation(ConfigurationDifinition.class).name();
-                    String descp = type.getAnnotation(ConfigurationDifinition.class).descp();
+                    String configName = type.getAnnotation(Configurations.class).name();
+                    String descp = type.getAnnotation(Configurations.class).descp();
                     File file;
                     if (filePolicy == FilePolicy.EACH_FILE_FOR_DEFINE_IN_PACKAGE) {
                         file = new File(storeDir.getAbsoluteFile() + "/" + ClassUtils.packageToDir(type) + "/"
@@ -220,7 +220,7 @@ public class PropertiesFileConfigurationConfigurator {
         this.dirPolicy = dirPolicy;
     }
 
-    public PropertiesFileConfigurationConfigurator setConfig(String configName, Config... configs) {
+    public PropertiesFileConfigurator setConfig(String configName, Config... configs) {
         Properties properties = loadConfig(configName);
         for (Config config : configs) {
             properties.setProperty(config.getName(), config.getValue());

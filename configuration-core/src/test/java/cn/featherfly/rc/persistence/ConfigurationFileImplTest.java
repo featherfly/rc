@@ -21,7 +21,7 @@ import cn.featherfly.common.io.FileUtils;
  */
 public class ConfigurationFileImplTest {
 
-    private ConfigurationPersistenceFileImpl persistence;
+    private ConfigurationFileRepository persistence;
 
     private String projectName = "featherfly-configuration-persistence-test";
 
@@ -33,9 +33,9 @@ public class ConfigurationFileImplTest {
 
         Set<MetadataReader> metadataReaders = new ClassPathScanningProvider()
                 .findMetadata(new String[] { "cn.featherfly" });
-        PropertiesFileConfigurationConfigurator configurator = new PropertiesFileConfigurationConfigurator(projectName,
+        PropertiesFileConfigurator configurator = new PropertiesFileConfigurator(projectName,
                 metadataReaders);
-        persistence = new ConfigurationPersistenceFileImpl(configurator);
+        persistence = new ConfigurationFileRepository(configurator);
 
     }
 

@@ -20,15 +20,15 @@ import cn.featherfly.rc.persistence.configs.WechatConfiguration;
  */
 public class TestDynamicFactory {
 
-    private ConfigurationPersistenceFileImpl persistence;
+    private ConfigurationFileRepository persistence;
 
     @BeforeClass
     public void before() {
         Set<MetadataReader> metadataReaders = new ClassPathScanningProvider()
                 .findMetadata(new String[] { "cn.featherfly" });
-        PropertiesFileConfigurationConfigurator configurator = new PropertiesFileConfigurationConfigurator(
+        PropertiesFileConfigurator configurator = new PropertiesFileConfigurator(
                 "featherfly-configuration-dynamic-test", metadataReaders);
-        persistence = new ConfigurationPersistenceFileImpl(configurator);
+        persistence = new ConfigurationFileRepository(configurator);
     }
 
     @Test

@@ -18,8 +18,7 @@ import cn.featherfly.conversion.core.TypeConversion;
 import cn.featherfly.hammer.Hammer;
 import cn.featherfly.rc.Configuration;
 import cn.featherfly.rc.ConfigurationException;
-import cn.featherfly.rc.ConfigurationPersistence;
-import cn.featherfly.rc.ConfigurationValuePersistence;
+import cn.featherfly.rc.ConfigurationRepository;
 import cn.featherfly.rc.SimpleConfiguration;
 
 /**
@@ -29,7 +28,7 @@ import cn.featherfly.rc.SimpleConfiguration;
  *
  * @author 钟冀
  */
-public class ConfigurationPersistenceSqlDBImpl implements ConfigurationPersistence, ConfigurationValuePersistence {
+public class ConfigurationPersistenceSqlDBImpl implements ConfigurationRepository {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -54,7 +53,7 @@ public class ConfigurationPersistenceSqlDBImpl implements ConfigurationPersisten
     @Override
     @CachePut(value = { "configurationCache" }, key = "'config:'+ #configName + ':' + #name")
     @Transactional
-    public <V extends Object> ConfigurationValuePersistence set(String configName, String name, V value) {
+    public <V extends Object> ConfigurationRepository set(String configName, String name, V value) {
         //        String sql = String.format("update %s set value = ? where config_name = ? and name = ?",
         //                CONFIGURATION_VALUE_TABLE_NAME);
         //        if (jdbcPersistence.execute(sql, new Object[] { value, configName, name }) < 1) {
@@ -71,7 +70,7 @@ public class ConfigurationPersistenceSqlDBImpl implements ConfigurationPersisten
      * {@inheritDoc}
      */
     @Override
-    public <V> ConfigurationValuePersistence set(String configName, Map<String, V> configNameValueMap) {
+    public <V> ConfigurationRepository set(String configName, Map<String, V> configNameValueMap) {
         configNameValueMap.entrySet().forEach(e -> set(configName, e.getKey(), e.getValue()));
         return this;
     }

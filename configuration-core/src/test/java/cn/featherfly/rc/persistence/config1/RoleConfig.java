@@ -1,7 +1,7 @@
 
 package cn.featherfly.rc.persistence.config1;
 
-import cn.featherfly.rc.annotation.ConfigurationDifinition;
+import cn.featherfly.rc.annotation.Configurations;
 
 /**
  * <p>
@@ -10,7 +10,7 @@ import cn.featherfly.rc.annotation.ConfigurationDifinition;
  * 
  * @author zhongj
  */
-@ConfigurationDifinition(name = "RoleConfig", descp = "role config")
+@Configurations(name = "RoleConfig", descp = "role config")
 public interface RoleConfig {
 
     String getName();

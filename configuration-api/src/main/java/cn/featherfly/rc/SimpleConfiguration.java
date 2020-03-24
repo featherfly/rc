@@ -18,20 +18,20 @@ public class SimpleConfiguration implements Configuration {
 
     private String descp;
 
-    private ConfigurationValuePersistence configurationValuePersistence;
+    private ConfigurationRepository configurationRepository;
 
     /**
-     * @param name                          配置定义名称
-     * @param descp                         配置定义描述
-     * @param configurationValuePersistence 持久化支持
+     * @param name                    配置定义名称
+     * @param descp                   配置定义描述
+     * @param configurationRepository 存储支持
      */
-    public SimpleConfiguration(String name, String descp, ConfigurationValuePersistence configurationValuePersistence) {
+    public SimpleConfiguration(String name, String descp, ConfigurationRepository configurationRepository) {
         super();
         AssertIllegalArgument.isNotNull(name, "name");
-        AssertIllegalArgument.isNotNull(configurationValuePersistence, "configurationValuePersistence");
+        AssertIllegalArgument.isNotNull(configurationRepository, "configurationRepository");
         this.name = name;
         this.descp = descp;
-        this.configurationValuePersistence = configurationValuePersistence;
+        this.configurationRepository = configurationRepository;
     }
 
     /**
@@ -39,7 +39,7 @@ public class SimpleConfiguration implements Configuration {
      */
     @Override
     public <V extends Serializable> V get(String key, Class<V> type) {
-        return configurationValuePersistence.get(name, key, type);
+        return configurationRepository.get(name, key, type);
     }
 
     /**
@@ -47,7 +47,7 @@ public class SimpleConfiguration implements Configuration {
      */
     @Override
     public <V extends Serializable> Configuration set(String key, V value) {
-        configurationValuePersistence.set(name, key, value);
+        configurationRepository.set(name, key, value);
         return this;
     }
 

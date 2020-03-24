@@ -11,13 +11,13 @@ import cn.featherfly.common.io.ClassPathScanningProvider;
  *
  * @author 钟冀
  */
-public class PropertiesFileScanConfigurationConfigurator extends PropertiesFileConfigurationConfigurator {
+public class PropertiesFileScanConfigurator extends PropertiesFileConfigurator {
 
     /**
      * @param projectName  projectName
      * @param basePackages basePackages
      */
-    public PropertiesFileScanConfigurationConfigurator(String projectName, Set<String> basePackages) {
+    public PropertiesFileScanConfigurator(String projectName, Set<String> basePackages) {
         super(projectName, new ClassPathScanningProvider().findMetadata(basePackages.toArray(new String[] {})));
     }
 

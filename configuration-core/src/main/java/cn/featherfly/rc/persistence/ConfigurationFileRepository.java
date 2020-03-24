@@ -13,29 +13,28 @@ import cn.featherfly.common.lang.reflect.GenericClass;
 import cn.featherfly.conversion.core.ConversionPolicys;
 import cn.featherfly.conversion.core.TypeConversion;
 import cn.featherfly.rc.Configuration;
-import cn.featherfly.rc.ConfigurationPersistence;
-import cn.featherfly.rc.ConfigurationValuePersistence;
+import cn.featherfly.rc.ConfigurationRepository;
 import cn.featherfly.rc.SimpleConfiguration;
 
 /**
  * <p>
- * ConfigurationPersistenceService
+ * ConfigurationFileRepository
  * </p>
  *
  * @author 钟冀
  */
-public class ConfigurationPersistenceFileImpl implements ConfigurationPersistence, ConfigurationValuePersistence {
+public class ConfigurationFileRepository implements ConfigurationRepository {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private PropertiesFileConfigurationConfigurator configurator;
+    private PropertiesFileConfigurator configurator;
 
     private TypeConversion conversion;
 
     /**
      * @param configurator
      */
-    public ConfigurationPersistenceFileImpl(PropertiesFileConfigurationConfigurator configurator) {
+    public ConfigurationFileRepository(PropertiesFileConfigurator configurator) {
         this(configurator, new TypeConversion(ConversionPolicys.getBasicConversionPolicy()));
     }
 
@@ -43,7 +42,7 @@ public class ConfigurationPersistenceFileImpl implements ConfigurationPersistenc
      * @param configurator
      * @param conversion
      */
-    public ConfigurationPersistenceFileImpl(PropertiesFileConfigurationConfigurator configurator,
+    public ConfigurationFileRepository(PropertiesFileConfigurator configurator,
             TypeConversion conversion) {
         this.configurator = configurator;
         this.conversion = conversion;
@@ -53,7 +52,7 @@ public class ConfigurationPersistenceFileImpl implements ConfigurationPersistenc
      * {@inheritDoc}
      */
     @Override
-    public <V extends Object> ConfigurationValuePersistence set(String configName, String name, V value) {
+    public <V extends Object> ConfigurationRepository set(String configName, String name, V value) {
         Config config = new Config();
         config.setName(name);
         config.setValue(conversion.toString(value, new GenericClass<>(value.getClass())));
@@ -65,7 +64,7 @@ public class ConfigurationPersistenceFileImpl implements ConfigurationPersistenc
      * {@inheritDoc}
      */
     @Override
-    public <V> ConfigurationValuePersistence set(String configName, Map<String, V> configNameValueMap) {
+    public <V> ConfigurationRepository set(String configName, Map<String, V> configNameValueMap) {
         configurator.setConfig(configName,
                 configNameValueMap.entrySet().stream()
                         .map(e -> new Config(e.getKey(),

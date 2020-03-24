@@ -1,7 +1,7 @@
 
 package cn.featherfly.rc.persistence.config;
 
-import cn.featherfly.rc.annotation.ConfigurationDifinition;
+import cn.featherfly.rc.annotation.Configurations;
 
 /**
  * <p>
@@ -10,7 +10,7 @@ import cn.featherfly.rc.annotation.ConfigurationDifinition;
  * 
  * @author zhongj
  */
-@ConfigurationDifinition(name = "UserConfig", descp = "user config")
+@Configurations(name = "UserConfig", descp = "user config")
 public interface UserConfig {
 
     String getName();
