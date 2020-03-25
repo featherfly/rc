@@ -1,4 +1,4 @@
-package cn.featherfly.rc.persistence;
+package cn.featherfly.rc.repository;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,14 +28,14 @@ import cn.featherfly.rc.SimpleConfiguration;
  *
  * @author 钟冀
  */
-public class ConfigurationPersistenceSqlDBImpl implements ConfigurationRepository {
+public class ConfigurationSqlDBRepository implements ConfigurationRepository {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      *
      */
-    public ConfigurationPersistenceSqlDBImpl() {
+    public ConfigurationSqlDBRepository() {
         super();
     }
 

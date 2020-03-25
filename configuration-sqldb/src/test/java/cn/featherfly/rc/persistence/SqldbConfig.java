@@ -23,7 +23,7 @@ import cn.featherfly.hammer.sqldb.jdbc.mapping.JdbcMappingFactory;
 import cn.featherfly.hammer.sqldb.sql.dialect.Dialects;
 import cn.featherfly.hammer.tpl.TplConfigFactory;
 import cn.featherfly.hammer.tpl.TplConfigFactoryImpl;
-import cn.featherfly.rc.persistence.ConfigurationPersistenceSqlDBImpl;
+import cn.featherfly.rc.repository.ConfigurationSqlDBRepository;
 import cn.featherfly.rc.spring.DynamicConfigurationScanSpringRegist;
 import cn.featherfly.rc.spring.DynamicConfigurationSpringRegist;
 
@@ -47,8 +47,8 @@ public class SqldbConfig {
     }
 
     @Bean
-    public ConfigurationPersistenceSqlDBImpl configurationPersistenceSqlDBImpl(Hammer hammer) {
-        ConfigurationPersistenceSqlDBImpl p = new ConfigurationPersistenceSqlDBImpl();
+    public ConfigurationSqlDBRepository configurationPersistenceSqlDBImpl(Hammer hammer) {
+        ConfigurationSqlDBRepository p = new ConfigurationSqlDBRepository();
         p.setHammer(hammer);
         return p;
     }

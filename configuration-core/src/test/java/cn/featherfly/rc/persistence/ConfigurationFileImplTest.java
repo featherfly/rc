@@ -11,6 +11,8 @@ import org.testng.annotations.Test;
 
 import cn.featherfly.common.io.ClassPathScanningProvider;
 import cn.featherfly.common.io.FileUtils;
+import cn.featherfly.rc.repository.ConfigurationFileRepository;
+import cn.featherfly.rc.repository.PropertiesFileConfigurator;
 
 /**
  * <p>

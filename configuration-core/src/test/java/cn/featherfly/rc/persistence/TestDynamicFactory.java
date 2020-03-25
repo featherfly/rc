@@ -10,6 +10,8 @@ import org.testng.annotations.Test;
 import cn.featherfly.common.io.ClassPathScanningProvider;
 import cn.featherfly.rc.javassist.DynamicConfigurationFacotry;
 import cn.featherfly.rc.persistence.configs.WechatConfiguration;
+import cn.featherfly.rc.repository.ConfigurationFileRepository;
+import cn.featherfly.rc.repository.PropertiesFileConfigurator;
 
 /**
  * <p>

@@ -1,4 +1,4 @@
-package cn.featherfly.rc.persistence;
+package cn.featherfly.rc.repository;
 
 import java.util.ArrayList;
 import java.util.Collection;
