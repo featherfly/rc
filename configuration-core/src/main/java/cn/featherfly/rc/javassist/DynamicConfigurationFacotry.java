@@ -14,8 +14,8 @@ import cn.featherfly.common.lang.ClassUtils;
 import cn.featherfly.common.lang.CollectionUtils;
 import cn.featherfly.common.lang.matcher.MethodNameRegexMatcher;
 import cn.featherfly.rc.ConfigurationException;
-import cn.featherfly.rc.ConfigurationValuePersistence;
-import cn.featherfly.rc.annotation.ConfigurationDifinition;
+import cn.featherfly.rc.ConfigurationRepository;
+import cn.featherfly.rc.annotation.Configurations;
 import javassist.CannotCompileException;
 import javassist.ClassClassPath;
 import javassist.ClassPool;
@@ -63,24 +63,23 @@ public class DynamicConfigurationFacotry {
      * always return a new instance
      *
      * @param <E>
-     * @param type        configuration interface type
-     * @param persistence ConfigurationValuePersistence
+     * @param type       configuration interface type
+     * @param repository ConfigurationRepository
      * @return new instance
      */
     @SuppressWarnings("unchecked")
-    public <E> E newInstance(Class<E> type, ConfigurationValuePersistence persistence) {
+    public <E> E newInstance(Class<E> type, ConfigurationRepository repository) {
         try {
             AssertIllegalArgument.isNotNull(type, "type");
-            AssertIllegalArgument.isNotNull(persistence, "persistence");
-            ConfigurationDifinition cd = type.getAnnotation(ConfigurationDifinition.class);
+            AssertIllegalArgument.isNotNull(repository, "repository");
+            Configurations cd = type.getAnnotation(Configurations.class);
             if (cd == null) {
                 throw new ConfigurationException(String.format("there is no annotation[%s] in type[%s]",
-                        ConfigurationDifinition.class.getName(), type.getName()));
+                        Configurations.class.getName(), type.getName()));
             }
             String configName = cd.name();
-            return (E) ClassUtils.forName(create(type))
-                    .getConstructor(String.class, ConfigurationValuePersistence.class)
-                    .newInstance(configName, persistence);
+            return (E) ClassUtils.forName(create(type)).getConstructor(String.class, ConfigurationRepository.class)
+                    .newInstance(configName, repository);
         } catch (Exception e) {
             throw new ConfigurationException(e);
         }
@@ -90,16 +89,16 @@ public class DynamicConfigurationFacotry {
      * return a singleton instance, every type only new one instance
      *
      * @param <E>
-     * @param type        configuration interface type
-     * @param persistence ConfigurationValuePersistence
+     * @param type       configuration interface type
+     * @param repository ConfigurationRepository
      * @return new instance
      */
     @SuppressWarnings("unchecked")
-    public <E> E instance(Class<E> type, ConfigurationValuePersistence persistence) {
+    public <E> E instance(Class<E> type, ConfigurationRepository repository) {
         E e = null;
         e = (E) typeInstances.get(type);
         if (e == null) {
-            e = newInstance(type, persistence);
+            e = newInstance(type, repository);
             typeInstances.put(type, e);
         }
         return e;
@@ -124,18 +123,16 @@ public class DynamicConfigurationFacotry {
             CtField nameField = new CtField(pool.getCtClass(String.class.getName()), "name", dynamicImplClass);
             nameField.setModifiers(Modifier.PRIVATE);
             dynamicImplClass.addField(nameField);
-            // configurationValuePersistence
-            CtField configurationValuePersistenceField = new CtField(
-                    pool.getCtClass(ConfigurationValuePersistence.class.getName()), "configurationValuePersistence",
-                    dynamicImplClass);
-            configurationValuePersistenceField.setModifiers(Modifier.PRIVATE);
-            dynamicImplClass.addField(configurationValuePersistenceField);
-            CtConstructor constraConstructor = new CtConstructor(
-                    new CtClass[] { pool.getCtClass(String.class.getName()),
-                            pool.getCtClass(ConfigurationValuePersistence.class.getName()) },
+            // ConfigurationRepository
+            CtField configurationRepositoryField = new CtField(pool.getCtClass(ConfigurationRepository.class.getName()),
+                    "configurationRepository", dynamicImplClass);
+            configurationRepositoryField.setModifiers(Modifier.PRIVATE);
+            dynamicImplClass.addField(configurationRepositoryField);
+            CtConstructor constraConstructor = new CtConstructor(new CtClass[] {
+                    pool.getCtClass(String.class.getName()), pool.getCtClass(ConfigurationRepository.class.getName()) },
                     dynamicImplClass);
             constraConstructor.setModifiers(Modifier.PUBLIC);
-            constraConstructor.setBody("{this.name=$1;this.configurationValuePersistence=$2;}");
+            constraConstructor.setBody("{this.name=$1;this.configurationRepository=$2;}");
             dynamicImplClass.addConstructor(constraConstructor);
 
             Collection<Method> getMethods = ClassUtils.findMethods(type, new MethodNameRegexMatcher("get.+"));
@@ -143,9 +140,8 @@ public class DynamicConfigurationFacotry {
             for (Method getMethod : getMethods) {
                 CtMethod ctMethod = new CtMethod(pool.getCtClass(getMethod.getReturnType().getTypeName()),
                         getMethod.getName(), new CtClass[] {}, dynamicImplClass);
-                ctMethod.setBody(
-                        String.format("{return (%2$s) configurationValuePersistence.get(name, \"%s\", %2$s.class);}",
-                                ClassUtils.getPropertyName(getMethod), getMethod.getReturnType().getTypeName()));
+                ctMethod.setBody(String.format("{return (%2$s) configurationRepository.get(name, \"%s\", %2$s.class);}",
+                        ClassUtils.getPropertyName(getMethod), getMethod.getReturnType().getTypeName()));
                 ctMethod.setModifiers(Modifier.PUBLIC);
                 dynamicImplClass.addMethod(ctMethod);
             }
@@ -156,7 +152,7 @@ public class DynamicConfigurationFacotry {
                 }
                 CtMethod ctMethod = new CtMethod(pool.getCtClass(setMethod.getReturnType().getTypeName()),
                         setMethod.getName(), CollectionUtils.toArray(params, CtClass.class), dynamicImplClass);
-                ctMethod.setBody(String.format("{configurationValuePersistence.set(name, \"%s\", $1);return this;}",
+                ctMethod.setBody(String.format("{configurationRepository.set(name, \"%s\", $1);return this;}",
                         ClassUtils.getPropertyName(setMethod)));
                 ctMethod.setModifiers(Modifier.PUBLIC);
                 dynamicImplClass.addMethod(ctMethod);

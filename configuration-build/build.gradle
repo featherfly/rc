@@ -12,7 +12,7 @@ allprojects {
 	    compile 'cn.featherfly:featherfly-algorithm:1.0.2'
 	    */
 	    testCompile (
-			'org.testng:testng:6.8.21'
+			'org.testng:testng:7.1.0'
 			,'org.springframework:spring-test:5.2.1.RELEASE'
 			,'dom4j:dom4j:1.6.1'
 			,'commons-dbcp:commons-dbcp:1.4'
@@ -20,5 +20,7 @@ allprojects {
 	    )
 	    testCompile 'org.slf4j:slf4j-log4j12:1.7.28'
         testCompile 'log4j:log4j:1.2.17'
+        testCompile group: 'com.google.inject', name: 'guice', version: '4.2.3'
+        
 	}
 }

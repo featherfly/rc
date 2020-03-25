@@ -2,7 +2,7 @@
 package cn.featherfly.rc.persistence.configs;
 
 import cn.featherfly.rc.annotation.Configuration;
-import cn.featherfly.rc.annotation.ConfigurationDifinition;
+import cn.featherfly.rc.annotation.Configurations;
 
 /**
  * <p>
@@ -11,7 +11,7 @@ import cn.featherfly.rc.annotation.ConfigurationDifinition;
  *
  * @author 钟冀
  */
-@ConfigurationDifinition(name = "test", descp = "描述")
+@Configurations(name = "test", descp = "描述")
 public interface TestConfig {
 
     @Configuration

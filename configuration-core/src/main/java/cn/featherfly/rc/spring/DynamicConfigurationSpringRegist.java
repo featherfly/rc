@@ -16,7 +16,7 @@ import org.springframework.core.type.classreading.MetadataReader;
 import cn.featherfly.common.lang.ClassUtils;
 import cn.featherfly.common.lang.LangUtils;
 import cn.featherfly.rc.ConfigurationException;
-import cn.featherfly.rc.annotation.ConfigurationDifinition;
+import cn.featherfly.rc.annotation.Configurations;
 import cn.featherfly.rc.javassist.DynamicConfigurationFacotry;
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
@@ -69,13 +69,13 @@ public class DynamicConfigurationSpringRegist implements BeanDefinitionRegistryP
         }
         logger.debug("start regist configuration to spring");
         for (MetadataReader metadataReader : metadataReaders) {
-            if (metadataReader.getAnnotationMetadata().hasAnnotation(ConfigurationDifinition.class.getName())) {
+            if (metadataReader.getAnnotationMetadata().hasAnnotation(Configurations.class.getName())) {
                 try {
                     Class<?> type = ClassUtils.forName(metadataReader.getClassMetadata().getClassName());
-                    ConfigurationDifinition cd = type.getAnnotation(ConfigurationDifinition.class);
+                    Configurations cd = type.getAnnotation(Configurations.class);
                     if (cd == null) {
                         throw new ConfigurationException(String.format("there is no annotation[%s] in type[%s]",
-                                ConfigurationDifinition.class.getName(), type.getName()));
+                                Configurations.class.getName(), type.getName()));
                     }
                     String configName = cd.name();
                     String dynamicImplName = dynamicConfigurationFacotry.create(type);

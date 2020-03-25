@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * 配置项的注解.
+ * 单项配置的注解.
  * </p>
  *
  * @author 钟冀
