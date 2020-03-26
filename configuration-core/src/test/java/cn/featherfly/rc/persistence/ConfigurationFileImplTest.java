@@ -3,6 +3,7 @@ package cn.featherfly.rc.persistence;
 
 import static org.testng.Assert.assertEquals;
 
+import java.io.File;
 import java.util.Set;
 
 import org.springframework.core.type.classreading.MetadataReader;
@@ -11,6 +12,7 @@ import org.testng.annotations.Test;
 
 import cn.featherfly.common.io.ClassPathScanningProvider;
 import cn.featherfly.common.io.FileUtils;
+import cn.featherfly.common.lang.LangUtils;
 import cn.featherfly.rc.repository.ConfigurationFileRepository;
 import cn.featherfly.rc.repository.PropertiesFileConfigurator;
 
@@ -30,8 +32,9 @@ public class ConfigurationFileImplTest {
     @BeforeClass
     public void before() {
         // 删除配置目录
-        FileUtils.deleteDir(
-                org.apache.commons.io.FileUtils.getUserDirectoryPath() + "/.featherfly_configuration/" + projectName);
+        LangUtils.ifExists(new File(
+                org.apache.commons.io.FileUtils.getUserDirectoryPath() + "/.featherfly_configuration/" + projectName),
+                f -> FileUtils.deleteDir(f), f -> FileUtils.makeDirectory(f));
 
         Set<MetadataReader> metadataReaders = new ClassPathScanningProvider()
                 .findMetadata(new String[] { "cn.featherfly" });

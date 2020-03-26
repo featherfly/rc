@@ -1,24 +1,30 @@
 package cn.featherfly.rc.repository;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
-import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 
+import cn.featherfly.common.io.Properties;
+import cn.featherfly.common.io.Properties.Property;
+import cn.featherfly.common.io.PropertiesImpl;
 import cn.featherfly.common.lang.AssertIllegalArgument;
 import cn.featherfly.common.lang.ClassUtils;
 import cn.featherfly.common.lang.LangUtils;
+import cn.featherfly.common.lang.matcher.MethodNameRegexMatcher;
 import cn.featherfly.rc.ConfigurationException;
+import cn.featherfly.rc.annotation.Configuration;
 import cn.featherfly.rc.annotation.Configurations;
 
 /**
@@ -103,16 +109,34 @@ public class PropertiesFileConfigurator {
                     } else {
                         file = new File(storeDir.getAbsoluteFile() + "/" + configName + ".properties");
                     }
-                    Properties properties = new Properties();
+                    final Properties properties;
                     if (!file.exists()) {
+                        properties = new PropertiesImpl();
                         createFile(file, configName);
                         configFileMap.put(configName, file);
                         try {
-                            properties.setProperty(type.getName(), configName);
-                            if (LangUtils.isNotEmpty(descp)) {
-                                properties.setProperty(getConfigNameDescpKey(configName), descp);
+                            properties.setProperty(type.getName(), configName, descp);
+
+                            Collection<Method> getMethods = ClassUtils.findMethods(type,
+                                    new MethodNameRegexMatcher("get.+"));
+                            Collection<Method> setMethods = ClassUtils.findMethods(type,
+                                    new MethodNameRegexMatcher("set.+"));
+
+                            Map<String, Configuration> map = new HashMap<>();
+                            for (Method setMethod : setMethods) {
+                                LangUtils.ifNotEmpty(setMethod.getAnnotation(Configuration.class),
+                                        a -> map.put(ClassUtils.getPropertyName(setMethod), a));
                             }
-                            properties.store(new FileWriterWithEncoding(file, StandardCharsets.UTF_8), configName);
+                            for (Method getMethod : getMethods) {
+                                LangUtils.ifNotEmpty(getMethod.getAnnotation(Configuration.class),
+                                        a -> map.put(ClassUtils.getPropertyName(getMethod), a));
+                            }
+                            map.entrySet()
+                                    .forEach(e -> properties.setProperty(
+                                            LangUtils.ifEmpty(e.getValue().name(), () -> e.getKey(), n -> n),
+                                            e.getValue().value(), e.getValue().descp()));
+                            properties.store(new FileOutputStream(file));
+
                             // configMap.put(configName, properties);
                             logger.debug("create file {} for {}", file.getAbsolutePath(), type.getName());
                         } catch (IOException e) {
@@ -159,10 +183,6 @@ public class PropertiesFileConfigurator {
 
     public File getConfigFile(String config) {
         return configFileMap.get(config);
-    }
-
-    private String getConfigNameDescpKey(String configName) {
-        return "ConfigName." + getDescpKey(configName);
     }
 
     private void createFile(File file, String configName) {
@@ -223,13 +243,12 @@ public class PropertiesFileConfigurator {
     public PropertiesFileConfigurator setConfig(String configName, Config... configs) {
         Properties properties = loadConfig(configName);
         for (Config config : configs) {
-            properties.setProperty(config.getName(), config.getValue());
-            if (LangUtils.isNotEmpty(config.getDescp())) {
-                properties.setProperty(getDescpKey(config.getName()), config.getDescp());
-            }
+            properties.setProperty(config.getName(), config.getValue(), config.getDescp());
+            //            if (LangUtils.isNotEmpty(config.getDescp())) {
+            //                properties.setProperty(getDescpKey(config.getName()), config.getDescp());
+            //            }
             try {
-                properties.store(new FileWriterWithEncoding(configFileMap.get(configName), StandardCharsets.UTF_8),
-                        configName);
+                properties.store(new FileOutputStream(configFileMap.get(configName)));
                 propertiesMap.put(configName, properties);
             } catch (IOException e) {
                 throw new ConfigurationException(String.format("为%s的%s设置值%s时发生错误%s", configName, config.getName(),
@@ -241,18 +260,24 @@ public class PropertiesFileConfigurator {
 
     public Config getConfig(String configName, String name) {
         Properties properties = propertiesMap.get(configName);
+        Property p = properties.getPropertyPart(name);
         Config config = new Config();
         config.setName(name);
-        config.setValue(properties.getProperty(name));
-        config.setDescp(properties.getProperty(getDescpKey(name)));
+        if (p != null) {
+            config.setValue(p.getValue());
+            //        config.setDescp(properties.getProperty(getDescpKey(name)));
+            config.setDescp(p.getComment());
+        }
         return config;
     }
 
     public Config getConfigDifinition(String configName) {
         Config config = new Config();
         Properties properties = propertiesMap.get(configName);
+        Property p = properties.getPropertyPart(configName);
         config.setConfigName(configName);
-        config.setConfigDescp(properties.getProperty(getConfigNameDescpKey(configName)));
+        //        config.setConfigDescp(properties.getProperty(getConfigNameDescpKey(configName)));
+        config.setConfigDescp(p.getComment());
         return config;
     }
 
@@ -263,8 +288,8 @@ public class PropertiesFileConfigurator {
             throw new ConfigurationException(String.format("%s的配置文件未找到", configName));
         }
         try {
-            Properties properties = new Properties();
-            properties.load(new FileReader(file));
+            Properties properties = new PropertiesImpl();
+            properties.load(new FileInputStream(file));
             return properties;
         } catch (IOException e) {
             throw new ConfigurationException(String.format("加载%s的配置文件%s报错", configName, file.getPath()));
@@ -273,10 +298,6 @@ public class PropertiesFileConfigurator {
 
     public Set<String> getConfigNames() {
         return configFileMap.keySet();
-    }
-
-    private String getDescpKey(String name) {
-        return name + ".descp";
     }
 
 }

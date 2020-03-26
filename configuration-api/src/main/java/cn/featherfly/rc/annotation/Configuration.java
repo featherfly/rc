@@ -33,4 +33,13 @@ public @interface Configuration {
      * @return 描述
      */
     String descp() default "";
+
+    /**
+     * <p>
+     * 该配置项的默认值
+     * </p>
+     *
+     * @return 默认值
+     */
+    String value() default "";
 }

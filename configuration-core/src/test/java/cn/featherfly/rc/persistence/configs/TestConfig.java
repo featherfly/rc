@@ -14,19 +14,15 @@ import cn.featherfly.rc.annotation.Configurations;
 @Configurations(name = "test", descp = "描述")
 public interface TestConfig {
 
-    @Configuration(descp = "性别")
-    default Integer sex() {
-        return 18;
-    }
-
+    @Configuration(value = "18", descp = "年龄")
     Integer getAge();
 
     TestConfig setAge(Integer age);
 
+    @Configuration(value = "yufei", descp = "姓名")
     String getName();
 
     TestConfig setName(String name);
-
 }
 
 class T implements TestConfig {
@@ -62,5 +58,4 @@ class T implements TestConfig {
         // YUFEI_TODO Auto-generated method stub
         return null;
     }
-
 }
