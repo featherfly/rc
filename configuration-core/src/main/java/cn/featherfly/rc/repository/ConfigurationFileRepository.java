@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.featherfly.common.lang.ClassUtils;
+import cn.featherfly.common.lang.LangUtils;
 import cn.featherfly.common.lang.reflect.GenericClass;
 import cn.featherfly.conversion.core.ConversionPolicys;
 import cn.featherfly.conversion.core.TypeConversion;
@@ -42,8 +43,7 @@ public class ConfigurationFileRepository implements ConfigurationRepository {
      * @param configurator
      * @param conversion
      */
-    public ConfigurationFileRepository(PropertiesFileConfigurator configurator,
-            TypeConversion conversion) {
+    public ConfigurationFileRepository(PropertiesFileConfigurator configurator, TypeConversion conversion) {
         this.configurator = configurator;
         this.conversion = conversion;
     }
@@ -79,7 +79,7 @@ public class ConfigurationFileRepository implements ConfigurationRepository {
     @SuppressWarnings("unchecked")
     @Override
     public <V extends Object> V get(String configName, String name, Class<V> type) {
-        String valueStr = configurator.getConfig(configName, name).getValue();
+        String valueStr = LangUtils.ifNotEmpty(configurator.getConfig(configName, name), c -> c.getValue(), () -> null);
         return (V) conversion.toObject(valueStr, new GenericClass<>(type));
     }
 

@@ -14,7 +14,7 @@ import cn.featherfly.rc.annotation.Configurations;
 @Configurations(name = "test", descp = "描述")
 public interface TestConfig {
 
-    @Configuration
+    @Configuration(descp = "性别")
     default Integer sex() {
         return 18;
     }

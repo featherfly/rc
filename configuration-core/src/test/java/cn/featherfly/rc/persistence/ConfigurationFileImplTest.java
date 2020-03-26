@@ -35,8 +35,7 @@ public class ConfigurationFileImplTest {
 
         Set<MetadataReader> metadataReaders = new ClassPathScanningProvider()
                 .findMetadata(new String[] { "cn.featherfly" });
-        PropertiesFileConfigurator configurator = new PropertiesFileConfigurator(projectName,
-                metadataReaders);
+        PropertiesFileConfigurator configurator = new PropertiesFileConfigurator(projectName, metadataReaders);
         persistence = new ConfigurationFileRepository(configurator);
 
     }
@@ -54,6 +53,11 @@ public class ConfigurationFileImplTest {
         name = "admin";
         persistence.set("RoleConfig", "name", name);
         assertEquals(persistence.get("RoleConfig", "name", String.class), name);
+
+        Integer sex = 1;
+        persistence.set("test", "sex", sex);
+
+        assertEquals(persistence.get("test", "sex", Integer.class), sex);
 
     }
 
