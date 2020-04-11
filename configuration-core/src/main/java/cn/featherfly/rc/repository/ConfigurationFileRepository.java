@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 import cn.featherfly.common.lang.ClassUtils;
 import cn.featherfly.common.lang.LangUtils;
 import cn.featherfly.common.lang.reflect.GenericClass;
-import cn.featherfly.conversion.core.ConversionPolicys;
-import cn.featherfly.conversion.core.TypeConversion;
+import cn.featherfly.conversion.string.ToStringConversionPolicys;
+import cn.featherfly.conversion.string.ToStringTypeConversion;
 import cn.featherfly.rc.Configuration;
 import cn.featherfly.rc.ConfigurationRepository;
 import cn.featherfly.rc.SimpleConfiguration;
@@ -30,20 +30,20 @@ public class ConfigurationFileRepository implements ConfigurationRepository {
 
     private PropertiesFileConfigurator configurator;
 
-    private TypeConversion conversion;
+    private ToStringTypeConversion conversion;
 
     /**
      * @param configurator
      */
     public ConfigurationFileRepository(PropertiesFileConfigurator configurator) {
-        this(configurator, new TypeConversion(ConversionPolicys.getBasicConversionPolicy()));
+        this(configurator, new ToStringTypeConversion(ToStringConversionPolicys.getBasicConversionPolicy()));
     }
 
     /**
      * @param configurator
      * @param conversion
      */
-    public ConfigurationFileRepository(PropertiesFileConfigurator configurator, TypeConversion conversion) {
+    public ConfigurationFileRepository(PropertiesFileConfigurator configurator, ToStringTypeConversion conversion) {
         this.configurator = configurator;
         this.conversion = conversion;
     }
@@ -51,25 +51,13 @@ public class ConfigurationFileRepository implements ConfigurationRepository {
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     @Override
     public <V extends Object> ConfigurationRepository set(String configName, String name, V value) {
         Config config = new Config();
         config.setName(name);
-        config.setValue(conversion.toString(value, new GenericClass<>(value.getClass())));
+        config.setValue(conversion.sourceToTarget(value, (Class<V>) value.getClass()));
         configurator.setConfig(configName, config);
-        return this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public <V> ConfigurationRepository set(String configName, Map<String, V> configNameValueMap) {
-        configurator.setConfig(configName,
-                configNameValueMap.entrySet().stream()
-                        .map(e -> new Config(e.getKey(),
-                                conversion.toString(e.getValue(), new GenericClass<>(e.getValue().getClass()))))
-                        .toArray(value -> new Config[configNameValueMap.size()]));
         return this;
     }
 
@@ -78,9 +66,22 @@ public class ConfigurationFileRepository implements ConfigurationRepository {
      */
     @SuppressWarnings("unchecked")
     @Override
+    public ConfigurationRepository set(String configName, Map<String, Object> configNameValueMap) {
+        configurator.setConfig(configName,
+                configNameValueMap.entrySet().stream()
+                        .map(e -> new Config(e.getKey(),
+                                conversion.sourceToTarget(e.getValue(), (Class<Object>) e.getValue().getClass())))
+                        .toArray(value -> new Config[configNameValueMap.size()]));
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public <V extends Object> V get(String configName, String name, Class<V> type) {
         String valueStr = LangUtils.ifNotEmpty(configurator.getConfig(configName, name), c -> c.getValue(), () -> null);
-        return (V) conversion.toObject(valueStr, new GenericClass<>(type));
+        return conversion.targetToSource(valueStr, new GenericClass<>(type));
     }
 
     /**

@@ -1,5 +1,4 @@
 allprojects {
-    apply plugin: 'java'
     apply from: rootDir.getAbsolutePath() + '/java_base.gradle'
     apply from: rootDir.getAbsolutePath() + '/maven_push.gradle'
     
@@ -8,20 +7,20 @@ allprojects {
 	targetCompatibility = 1.8 
 
 	dependencies {
-        compile 'cn.featherfly.common:common-core:1.8.0'
+        api 'cn.featherfly.common:common-core:1.8.0'
         /*
-	    compile 'cn.featherfly:featherfly-algorithm:1.0.2'
+	    implementation 'cn.featherfly:featherfly-algorithm:1.0.2'
 	    */
-	    testCompile (
+	    testImplementation (
 			'org.testng:testng:7.1.0'
 			,'org.springframework:spring-test:5.2.1.RELEASE'
 			,'dom4j:dom4j:1.6.1'
 			,'commons-dbcp:commons-dbcp:1.4'
 			,'mysql:mysql-connector-java:5.1.17'
 	    )
-	    testCompile 'org.slf4j:slf4j-log4j12:1.7.28'
-        testCompile 'log4j:log4j:1.2.17'
-        testCompile group: 'com.google.inject', name: 'guice', version: '4.2.3'
+	    testImplementation 'org.slf4j:slf4j-log4j12:1.7.30'
+        testImplementation 'log4j:log4j:1.2.17'
+        testImplementation group: 'com.google.inject', name: 'guice', version: '4.2.3'
         
 	}
 }

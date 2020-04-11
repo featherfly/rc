@@ -52,6 +52,7 @@ public interface ConfigurationRepository {
      * @param name       配置名称
      * @param value      值
      * @param <V>        泛型
+     * @return this
      */
     <V extends Object> ConfigurationRepository set(String configName, String name, V value);
 
@@ -62,9 +63,9 @@ public interface ConfigurationRepository {
      *
      * @param configName   配置定义名称
      * @param nameValueMap 多个配置名，值对组成的Map
-     * @param <V>          泛型
+     * @return this
      */
-    <V extends Object> ConfigurationRepository set(String configName, Map<String, V> nameValueMap);
+    ConfigurationRepository set(String configName, Map<String, Object> nameValueMap);
 
     /**
      * <p>

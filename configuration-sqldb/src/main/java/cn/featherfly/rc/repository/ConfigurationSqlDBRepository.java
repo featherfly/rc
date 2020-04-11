@@ -12,9 +12,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.featherfly.common.lang.ClassUtils;
-import cn.featherfly.common.lang.reflect.GenericClass;
-import cn.featherfly.conversion.core.ConversionPolicys;
-import cn.featherfly.conversion.core.TypeConversion;
+import cn.featherfly.conversion.string.ToStringConversionPolicys;
+import cn.featherfly.conversion.string.ToStringTypeConversion;
 import cn.featherfly.hammer.Hammer;
 import cn.featherfly.rc.Configuration;
 import cn.featherfly.rc.ConfigurationException;
@@ -41,7 +40,8 @@ public class ConfigurationSqlDBRepository implements ConfigurationRepository {
 
     private Hammer hammer;
 
-    private TypeConversion conversion = new TypeConversion(ConversionPolicys.getFormatConversionPolicy());
+    private ToStringTypeConversion conversion = new ToStringTypeConversion(
+            ToStringConversionPolicys.getFormatConversionPolicy());
 
     private static final String CONFIGURATION_DIFINITION_TABLE_NAME = "RC_CONFIGURATION_DIFINITION";
 
@@ -70,7 +70,7 @@ public class ConfigurationSqlDBRepository implements ConfigurationRepository {
      * {@inheritDoc}
      */
     @Override
-    public <V> ConfigurationRepository set(String configName, Map<String, V> configNameValueMap) {
+    public ConfigurationRepository set(String configName, Map<String, Object> configNameValueMap) {
         configNameValueMap.entrySet().forEach(e -> set(configName, e.getKey(), e.getValue()));
         return this;
     }
@@ -78,7 +78,6 @@ public class ConfigurationSqlDBRepository implements ConfigurationRepository {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
     @Override
     @Cacheable(value = { "configurationCache" }, key = "'config:'+ #configName + ':' + #name")
     public <V extends Object> V get(String configName, String name, Class<V> type) {
@@ -87,7 +86,7 @@ public class ConfigurationSqlDBRepository implements ConfigurationRepository {
         //        String valueStr = jdbcPersistence.findForString(sql, new Object[] { configName, name });
         String valueStr = hammer.query(CONFIGURATION_VALUE_TABLE_NAME).property("value").where()
                 .eq("config_name", configName).and().eq("name", name).string();
-        return (V) conversion.toObject(valueStr, new GenericClass<>(type));
+        return conversion.targetToSource(valueStr, type);
     }
 
     /**
@@ -173,7 +172,7 @@ public class ConfigurationSqlDBRepository implements ConfigurationRepository {
      *
      * @return conversion
      */
-    public TypeConversion getConversion() {
+    public ToStringTypeConversion getConversion() {
         return conversion;
     }
 
@@ -182,7 +181,7 @@ public class ConfigurationSqlDBRepository implements ConfigurationRepository {
      *
      * @param conversion conversion
      */
-    public void setConversion(TypeConversion conversion) {
+    public void setConversion(ToStringTypeConversion conversion) {
         this.conversion = conversion;
     }
 }
