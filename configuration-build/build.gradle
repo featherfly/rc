@@ -7,13 +7,13 @@ allprojects {
 	targetCompatibility = 1.8 
 
 	dependencies {
-        api 'cn.featherfly.common:common-core:1.8.0'
+        api 'cn.featherfly.common:common-core:1.8.4'
         /*
 	    implementation 'cn.featherfly:featherfly-algorithm:1.0.2'
 	    */
 	    testImplementation (
 			'org.testng:testng:7.1.0'
-			,'org.springframework:spring-test:5.2.1.RELEASE'
+			,'org.springframework:spring-test:5.2.6.RELEASE'
 			,'dom4j:dom4j:1.6.1'
 			,'commons-dbcp:commons-dbcp:1.4'
 			,'mysql:mysql-connector-java:5.1.17'

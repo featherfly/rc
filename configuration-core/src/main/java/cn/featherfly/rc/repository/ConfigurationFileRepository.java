@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,9 @@ import cn.featherfly.conversion.string.ToStringConversionPolicys;
 import cn.featherfly.conversion.string.ToStringTypeConversion;
 import cn.featherfly.rc.Configuration;
 import cn.featherfly.rc.ConfigurationRepository;
+import cn.featherfly.rc.ConfigurationValue;
 import cn.featherfly.rc.SimpleConfiguration;
+import cn.featherfly.rc.SimpleConfigurationValue;
 
 /**
  * <p>
@@ -102,7 +105,7 @@ public class ConfigurationFileRepository implements ConfigurationRepository {
     @Override
     public Configuration getConfiguration(String name) {
         Config config = configurator.getConfigDifinition(name);
-        SimpleConfiguration simpleConfiguration = new SimpleConfiguration(config.getName(), config.getDescp(), this);
+        SimpleConfiguration simpleConfiguration = new SimpleConfiguration(name, config.getDescp(), this);
         return simpleConfiguration;
     }
 
@@ -113,5 +116,20 @@ public class ConfigurationFileRepository implements ConfigurationRepository {
     public <C extends Configuration> C getConfiguration(String name, Class<C> type) {
         C configuration = ClassUtils.newInstance(type, new Object[] { name, this });
         return configuration;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<ConfigurationValue<?>> getConfigurations(String name) {
+        return configurator.getConfigs(name).stream().map(c -> {
+            SimpleConfigurationValue<Object> value = new SimpleConfigurationValue<>();
+            value.setName(c.getName());
+            value.setValue(c.getValue());
+            value.setDescp(c.getDescp());
+            return (ConfigurationValue<?>) value;
+        }).collect(Collectors.toList());
+
     }
 }

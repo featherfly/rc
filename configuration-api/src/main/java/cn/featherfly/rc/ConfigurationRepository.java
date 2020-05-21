@@ -2,6 +2,7 @@
 package cn.featherfly.rc;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,6 +43,16 @@ public interface ConfigurationRepository {
      * @return 配置对象
      */
     <C extends Configuration> C getConfiguration(String configName, Class<C> type);
+
+    /**
+     * <p>
+     * 获取指定名称的配置所有配置项
+     * </p>
+     *
+     * @param configName 配置定义名称
+     * @return 配置项列表
+     */
+    List<ConfigurationValue<?>> getConfigurations(String configName);
 
     /**
      * <p>

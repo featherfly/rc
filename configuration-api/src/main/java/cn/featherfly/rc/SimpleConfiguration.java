@@ -66,4 +66,13 @@ public class SimpleConfiguration implements Configuration {
     public String getDescp() {
         return descp;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "SimpleConfiguration [name=" + name + ", descp=" + descp + "]";
+    }
+
 }

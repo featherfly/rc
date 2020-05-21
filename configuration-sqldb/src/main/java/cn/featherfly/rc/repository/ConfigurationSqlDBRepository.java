@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,21 +19,25 @@ import cn.featherfly.hammer.Hammer;
 import cn.featherfly.rc.Configuration;
 import cn.featherfly.rc.ConfigurationException;
 import cn.featherfly.rc.ConfigurationRepository;
+import cn.featherfly.rc.ConfigurationValue;
 import cn.featherfly.rc.SimpleConfiguration;
+import cn.featherfly.rc.SimpleConfigurationValue;
 
 /**
  * <p>
  * ConfigurationPersistenceService
  * </p>
+ * .
  *
  * @author 钟冀
  */
 public class ConfigurationSqlDBRepository implements ConfigurationRepository {
 
+    /** The logger. */
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
-     *
+     * Instantiates a new configuration sql DB repository.
      */
     public ConfigurationSqlDBRepository() {
         super();
@@ -119,10 +124,7 @@ public class ConfigurationSqlDBRepository implements ConfigurationRepository {
 
     private Configuration create(Map<String, Object> configMap) {
         Object objDescp = configMap.get("descp");
-        String descp = "";
-        if (descp != null) {
-            descp = objDescp.toString();
-        }
+        String descp = objDescp == null ? null : objDescp.toString();
         return new SimpleConfiguration(configMap.get("name").toString(), descp, this);
     }
 
@@ -135,13 +137,24 @@ public class ConfigurationSqlDBRepository implements ConfigurationRepository {
         return configuration;
     }
 
-    public List<Map<String, Object>> getConfigurations(String configName) {
-        return hammer.query(CONFIGURATION_DIFINITION_TABLE_NAME).where().co("name", configName).sort().asc("name")
-                .list();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<ConfigurationValue<?>> getConfigurations(String configName) {
+        return hammer.query(CONFIGURATION_VALUE_TABLE_NAME).where().eq("config_name", configName).sort().asc("name")
+                .list(SimpleConfigurationValue.class).stream().map(v -> (ConfigurationValue<?>) v)
+                .collect(Collectors.toList());
         //        String sql = "select * from rc_configuration_difinition where name like '%" + configName + "%' order by NAME";
         //        return jdbcPersistence.findList(sql);
     }
 
+    /**
+     * Gets the config values.
+     *
+     * @param configName the config name
+     * @return the config values
+     */
     public List<Map<String, Object>> getConfigValues(String configName) {
         return hammer.query(CONFIGURATION_VALUE_TABLE_NAME).property("*", "config_name configName").where()
                 .co("config_name", configName).sort().asc("config_name", "name").list();
@@ -150,7 +163,7 @@ public class ConfigurationSqlDBRepository implements ConfigurationRepository {
     }
 
     /**
-     * 返回hammer
+     * 返回hammer.
      *
      * @return hammer
      */
@@ -159,7 +172,7 @@ public class ConfigurationSqlDBRepository implements ConfigurationRepository {
     }
 
     /**
-     * 设置hammer
+     * 设置hammer.
      *
      * @param hammer hammer
      */
@@ -168,7 +181,7 @@ public class ConfigurationSqlDBRepository implements ConfigurationRepository {
     }
 
     /**
-     * 返回conversion
+     * 返回conversion.
      *
      * @return conversion
      */
@@ -177,7 +190,7 @@ public class ConfigurationSqlDBRepository implements ConfigurationRepository {
     }
 
     /**
-     * 设置conversion
+     * 设置conversion.
      *
      * @param conversion conversion
      */

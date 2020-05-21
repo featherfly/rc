@@ -1,3 +1,7 @@
+2020-5-21
+1.2.1
+    1.ConfigurationRepository加入List<ConfigurationValue<?>> getConfigurations(String configName)
+    
 2020-4-11
 1.2.0
     1.重构项目结构

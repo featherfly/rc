@@ -131,4 +131,14 @@ public class Config {
         this.configDescp = configDescp;
         return this;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "Config [configName=" + configName + ", configDescp=" + configDescp + ", name=" + name + ", descp="
+                + descp + ", value=" + value + "]";
+    }
+
 }
