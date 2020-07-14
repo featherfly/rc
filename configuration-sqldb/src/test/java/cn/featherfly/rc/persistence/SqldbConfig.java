@@ -11,6 +11,8 @@ import org.apache.log4j.xml.DOMConfigurator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import cn.featherfly.common.db.dialect.Dialects;
+import cn.featherfly.common.db.mapping.JdbcMappingFactory;
 import cn.featherfly.common.db.metadata.DatabaseMetadata;
 import cn.featherfly.common.db.metadata.DatabaseMetadataManager;
 import cn.featherfly.common.lang.ClassLoaderUtils;
@@ -19,8 +21,6 @@ import cn.featherfly.hammer.Hammer;
 import cn.featherfly.hammer.sqldb.SqldbHammerImpl;
 import cn.featherfly.hammer.sqldb.jdbc.Jdbc;
 import cn.featherfly.hammer.sqldb.jdbc.SpringJdbcTemplateImpl;
-import cn.featherfly.hammer.sqldb.jdbc.mapping.JdbcMappingFactory;
-import cn.featherfly.hammer.sqldb.sql.dialect.Dialects;
 import cn.featherfly.hammer.tpl.TplConfigFactory;
 import cn.featherfly.hammer.tpl.TplConfigFactoryImpl;
 import cn.featherfly.rc.repository.ConfigurationSqlDBRepository;

@@ -14,7 +14,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProce
 import org.springframework.core.type.classreading.MetadataReader;
 
 import cn.featherfly.common.lang.ClassUtils;
-import cn.featherfly.common.lang.LangUtils;
+import cn.featherfly.common.lang.Lang;
 import cn.featherfly.rc.ConfigurationException;
 import cn.featherfly.rc.annotation.Configurations;
 import cn.featherfly.rc.javassist.DynamicConfigurationFacotry;
@@ -41,12 +41,28 @@ public class DynamicConfigurationSpringRegist implements BeanDefinitionRegistryP
 
     private String configurationValuePersistenceReference;
 
+    private ClassLoader classLoader;
+
     /**
      * @param metadataReaders                        metadataReaders
      * @param configurationValuePersistenceReference configurationValuePersistenceReference
      */
     public DynamicConfigurationSpringRegist(Set<MetadataReader> metadataReaders,
             String configurationValuePersistenceReference) {
+        super();
+        this.metadataReaders = metadataReaders;
+        this.configurationValuePersistenceReference = configurationValuePersistenceReference;
+    }
+
+    /**
+     * Instantiates a new dynamic configuration spring regist.
+     *
+     * @param metadataReaders                        metadataReaders
+     * @param configurationValuePersistenceReference configurationValuePersistenceReference
+     * @param classLoader                            the class loader
+     */
+    public DynamicConfigurationSpringRegist(Set<MetadataReader> metadataReaders,
+            String configurationValuePersistenceReference, ClassLoader classLoader) {
         super();
         this.metadataReaders = metadataReaders;
         this.configurationValuePersistenceReference = configurationValuePersistenceReference;
@@ -64,7 +80,7 @@ public class DynamicConfigurationSpringRegist implements BeanDefinitionRegistryP
      */
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-        if (LangUtils.isEmpty(metadataReaders)) {
+        if (Lang.isEmpty(metadataReaders)) {
             logger.debug("metadataReaders is empty");
         }
         logger.debug("start regist configuration to spring");
@@ -81,15 +97,20 @@ public class DynamicConfigurationSpringRegist implements BeanDefinitionRegistryP
                     String dynamicImplName = dynamicConfigurationFacotry.create(type);
                     logger.debug("create class {} for {}", dynamicImplName, type.getName());
                     logger.debug("regist -> {} for config named {}", dynamicImplName, configName);
-                    BeanDefinitionBuilder builder = BeanDefinitionBuilder
-                            .rootBeanDefinition(ClassUtils.forName(dynamicImplName));
+                    Class<?> newType;
+                    if (classLoader == null) {
+                        newType = ClassUtils.forName(dynamicImplName);
+                    } else {
+                        newType = classLoader.loadClass(dynamicImplName);
+                    }
+                    BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(newType);
                     builder.addConstructorArgValue(configName);
                     builder.addConstructorArgReference(configurationValuePersistenceReference);
                     builder.setScope(BeanDefinition.SCOPE_SINGLETON);
                     // registry.registerBeanDefinition(type.getName(),
                     // builder.getBeanDefinition());
                     registry.registerBeanDefinition(configName, builder.getBeanDefinition());
-                } catch (NotFoundException | CannotCompileException e) {
+                } catch (NotFoundException | CannotCompileException | ClassNotFoundException e) {
                     throw new ConfigurationException(e);
                 }
             }
@@ -105,4 +126,5 @@ public class DynamicConfigurationSpringRegist implements BeanDefinitionRegistryP
     public Set<MetadataReader> getMetadataReaders() {
         return metadataReaders;
     }
+
 }

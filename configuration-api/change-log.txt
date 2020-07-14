@@ -1,4 +1,12 @@
 2020-5-21
+1.2.2
+    1.删除未使用的apt定义文件
+    2.javassit动态创建配置接口实现类加入ClassLoader参数用于解决在springboot下不能正常的问题
+    3.升级依赖
+    
+    
+
+2020-5-21
 1.2.1
     1.ConfigurationRepository加入List<ConfigurationValue<?>> getConfigurations(String configName)
     

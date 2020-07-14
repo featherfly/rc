@@ -113,6 +113,19 @@ public class DynamicConfigurationFacotry {
      * @throws CannotCompileException
      */
     public String create(Class<?> type) throws NotFoundException, CannotCompileException {
+        return create(type, null);
+    }
+
+    /**
+     * create configuration interface implemented class.
+     *
+     * @param type        configuration interface class
+     * @param classLoader the class loader
+     * @return implemented class name
+     * @throws NotFoundException      the not found exception
+     * @throws CannotCompileException the cannot compile exception
+     */
+    public String create(Class<?> type, ClassLoader classLoader) throws NotFoundException, CannotCompileException {
         String dynamicClassName = type.getPackage().getName() + "._" + type.getSimpleName() + "DynamicImpl";
         if (!types.contains(type)) {
             ClassPool pool = ClassPool.getDefault();
@@ -157,7 +170,7 @@ public class DynamicConfigurationFacotry {
                 ctMethod.setModifiers(Modifier.PUBLIC);
                 dynamicImplClass.addMethod(ctMethod);
             }
-            dynamicImplClass.toClass();
+            dynamicImplClass.toClass(classLoader, dynamicImplClass.getClass().getProtectionDomain());
             dynamicImplClass.detach();
             types.add(type);
         }

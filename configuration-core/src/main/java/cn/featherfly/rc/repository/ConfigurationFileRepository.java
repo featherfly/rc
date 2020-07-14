@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.featherfly.common.lang.ClassUtils;
-import cn.featherfly.common.lang.LangUtils;
+import cn.featherfly.common.lang.Lang;
 import cn.featherfly.common.lang.reflect.GenericClass;
 import cn.featherfly.conversion.string.ToStringConversionPolicys;
 import cn.featherfly.conversion.string.ToStringTypeConversion;
@@ -83,7 +83,7 @@ public class ConfigurationFileRepository implements ConfigurationRepository {
      */
     @Override
     public <V extends Object> V get(String configName, String name, Class<V> type) {
-        String valueStr = LangUtils.ifNotEmpty(configurator.getConfig(configName, name), c -> c.getValue(), () -> null);
+        String valueStr = Lang.ifNotEmpty(configurator.getConfig(configName, name), c -> c.getValue(), () -> null);
         return conversion.targetToSource(valueStr, new GenericClass<>(type));
     }
 

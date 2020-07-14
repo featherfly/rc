@@ -7,7 +7,7 @@ allprojects {
 	targetCompatibility = 1.8 
 
 	dependencies {
-        api 'cn.featherfly.common:common-core:1.8.4'
+        api 'cn.featherfly.common:common-core:1.8.10'
         /*
 	    implementation 'cn.featherfly:featherfly-algorithm:1.0.2'
 	    */

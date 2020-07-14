@@ -27,7 +27,7 @@ import cn.featherfly.common.io.Properties.Property;
 import cn.featherfly.common.io.PropertiesImpl;
 import cn.featherfly.common.lang.AssertIllegalArgument;
 import cn.featherfly.common.lang.ClassUtils;
-import cn.featherfly.common.lang.LangUtils;
+import cn.featherfly.common.lang.Lang;
 import cn.featherfly.common.lang.matcher.MethodNameRegexMatcher;
 import cn.featherfly.rc.ConfigurationException;
 import cn.featherfly.rc.annotation.Configuration;
@@ -147,16 +147,16 @@ public class PropertiesFileConfigurator {
 
                             Map<String, Configuration> map = new HashMap<>();
                             for (Method setMethod : setMethods) {
-                                LangUtils.ifNotEmpty(setMethod.getAnnotation(Configuration.class),
+                                Lang.ifNotEmpty(setMethod.getAnnotation(Configuration.class),
                                         a -> map.put(ClassUtils.getPropertyName(setMethod), a));
                             }
                             for (Method getMethod : getMethods) {
-                                LangUtils.ifNotEmpty(getMethod.getAnnotation(Configuration.class),
+                                Lang.ifNotEmpty(getMethod.getAnnotation(Configuration.class),
                                         a -> map.put(ClassUtils.getPropertyName(getMethod), a));
                             }
                             map.entrySet()
                                     .forEach(e -> properties.setProperty(
-                                            LangUtils.ifEmpty(e.getValue().name(), () -> e.getKey(), n -> n),
+                                            Lang.ifEmpty(e.getValue().name(), () -> e.getKey(), n -> n),
                                             e.getValue().value(), e.getValue().descp()));
                             properties.store(new FileOutputStream(file));
 
@@ -280,7 +280,7 @@ public class PropertiesFileConfigurator {
         Properties properties = loadConfig(configName);
         for (Config config : configs) {
             properties.setProperty(config.getName(), config.getValue(), config.getDescp());
-            //            if (LangUtils.isNotEmpty(config.getDescp())) {
+            //            if (Lang.isNotEmpty(config.getDescp())) {
             //                properties.setProperty(getDescpKey(config.getName()), config.getDescp());
             //            }
             try {
