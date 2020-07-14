@@ -44,14 +44,14 @@ public class DynamicConfigurationSpringRegist implements BeanDefinitionRegistryP
     private ClassLoader classLoader;
 
     /**
+     * Instantiates a new dynamic configuration spring regist.
+     *
      * @param metadataReaders                        metadataReaders
      * @param configurationValuePersistenceReference configurationValuePersistenceReference
      */
     public DynamicConfigurationSpringRegist(Set<MetadataReader> metadataReaders,
             String configurationValuePersistenceReference) {
-        super();
-        this.metadataReaders = metadataReaders;
-        this.configurationValuePersistenceReference = configurationValuePersistenceReference;
+        this(metadataReaders, configurationValuePersistenceReference, null);
     }
 
     /**
@@ -66,6 +66,7 @@ public class DynamicConfigurationSpringRegist implements BeanDefinitionRegistryP
         super();
         this.metadataReaders = metadataReaders;
         this.configurationValuePersistenceReference = configurationValuePersistenceReference;
+        this.classLoader = classLoader;
     }
 
     /**
@@ -94,7 +95,7 @@ public class DynamicConfigurationSpringRegist implements BeanDefinitionRegistryP
                                 Configurations.class.getName(), type.getName()));
                     }
                     String configName = cd.name();
-                    String dynamicImplName = dynamicConfigurationFacotry.create(type);
+                    String dynamicImplName = dynamicConfigurationFacotry.create(type, classLoader);
                     logger.debug("create class {} for {}", dynamicImplName, type.getName());
                     logger.debug("regist -> {} for config named {}", dynamicImplName, configName);
                     Class<?> newType;
