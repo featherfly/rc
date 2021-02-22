@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 
 import cn.featherfly.common.db.dialect.Dialects;
 import cn.featherfly.common.db.mapping.JdbcMappingFactory;
+import cn.featherfly.common.db.mapping.JdbcMappingFactoryImpl;
 import cn.featherfly.common.db.metadata.DatabaseMetadata;
 import cn.featherfly.common.db.metadata.DatabaseMetadataManager;
 import cn.featherfly.common.lang.ClassLoaderUtils;
@@ -20,7 +21,7 @@ import cn.featherfly.constant.ConstantConfigurator;
 import cn.featherfly.hammer.Hammer;
 import cn.featherfly.hammer.sqldb.SqldbHammerImpl;
 import cn.featherfly.hammer.sqldb.jdbc.Jdbc;
-import cn.featherfly.hammer.sqldb.jdbc.SpringJdbcTemplateImpl;
+import cn.featherfly.hammer.sqldb.jdbc.JdbcImpl;
 import cn.featherfly.hammer.tpl.TplConfigFactory;
 import cn.featherfly.hammer.tpl.TplConfigFactoryImpl;
 import cn.featherfly.rc.repository.ConfigurationSqlDBRepository;
@@ -68,10 +69,10 @@ public class SqldbConfig {
         DOMConfigurator.configure(ClassLoaderUtils.getResource("log4j.xml", this.getClass()));
         ConstantConfigurator.config();
 
-        Jdbc jdbc = new SpringJdbcTemplateImpl(dataSource, Dialects.MYSQL);
+        Jdbc jdbc = new JdbcImpl(dataSource, Dialects.MYSQL);
         DatabaseMetadata metadata = DatabaseMetadataManager.getDefaultManager().create(dataSource);
 
-        JdbcMappingFactory mappingFactory = new JdbcMappingFactory(metadata, Dialects.MYSQL);
+        JdbcMappingFactory mappingFactory = new JdbcMappingFactoryImpl(metadata, Dialects.MYSQL);
 
         TplConfigFactory configFactory = new TplConfigFactoryImpl("tpl/");
 
