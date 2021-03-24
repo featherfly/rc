@@ -59,7 +59,9 @@ public class ConfigurationManager {
     private void check(MetadataReader metadataReader) {
         Class<?> type = ClassUtils.forName(metadataReader.getClassMetadata().getClassName());
         String configName = type.getAnnotation(Configurations.class).name();
-        if (configNameTypeMap.containsKey(configName)) {
+        String t = configNameTypeMap.get(configName);
+        // 忽略同样的类反复注册
+        if (t != null && !t.equals(type.getName())) {
             ConfigurationException.throwConfigDuplicateKey(configName, configNameTypeMap.get(configName),
                     type.getName());
         }
