@@ -27,13 +27,13 @@ import javassist.Modifier;
 import javassist.NotFoundException;
 
 /**
- * <p>
- * DynamicConfigFacotry
- * </p>
+ * DynamicConfigFacotry.
  *
- * @author 钟冀
+ * @author zhongj
  */
 public class DynamicConfigurationFacotry {
+
+    private ClassLoader classLoader;
 
     private Set<Class<?>> types = new HashSet<>();
 
@@ -113,7 +113,7 @@ public class DynamicConfigurationFacotry {
      * @throws CannotCompileException
      */
     public String create(Class<?> type) throws NotFoundException, CannotCompileException {
-        return create(type, null);
+        return create(type, this.getClass().getClassLoader());
     }
 
     /**
@@ -127,6 +127,18 @@ public class DynamicConfigurationFacotry {
      */
     public String create(Class<?> type, ClassLoader classLoader) throws NotFoundException, CannotCompileException {
         String dynamicClassName = type.getPackage().getName() + "._" + type.getSimpleName() + "DynamicImpl";
+        if (classLoader == null) {
+            classLoader = this.getClass().getClassLoader();
+        }
+        if (this.classLoader == null) {
+            // 第一次加载
+            this.classLoader = classLoader;
+        }
+        if (this.classLoader != classLoader) {
+            // 表示使用的classLoader没了，使用新的classLoader重新加载，一般出现在热部署时，如springboot-dev-tool的RestartClassLoader
+            clear();
+            this.classLoader = classLoader;
+        }
         if (!types.contains(type)) {
             ClassPool pool = ClassPool.getDefault();
             pool.insertClassPath(new ClassClassPath(this.getClass()));
@@ -175,5 +187,10 @@ public class DynamicConfigurationFacotry {
             types.add(type);
         }
         return dynamicClassName;
+    }
+
+    private void clear() {
+        types.clear();
+        typeInstances.clear();
     }
 }

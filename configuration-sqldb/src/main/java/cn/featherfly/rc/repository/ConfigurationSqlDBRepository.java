@@ -75,6 +75,7 @@ public class ConfigurationSqlDBRepository implements ConfigurationRepository {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public ConfigurationRepository set(String configName, Map<String, Object> configNameValueMap) {
         configNameValueMap.entrySet().forEach(e -> set(configName, e.getKey(), e.getValue()));
         return this;
