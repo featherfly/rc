@@ -47,15 +47,18 @@ public class SqldbTest extends AbstractTestNGSpringContextTests {
     @BeforeClass
     public void init() throws IOException {
         SqlExecutor sqlExecutor = new SqlExecutor(dataSource);
-        sqlExecutor.execute(new File(ClassLoaderUtils.getResource("test.mysql.sql.txt", this.getClass()).getFile()));
+        sqlExecutor.execute(new File(ClassLoaderUtils.getResource("test.mysql.sql", this.getClass()).getFile()));
     }
 
     @Test
     public void test() {
-        userConfig.setAge(28);
+        int age = 28;
+        userConfig.setAge(age);
         userConfig.setName("yufei");
         System.out.println(userConfig.getName());
         System.out.println(userConfig.getAge());
+
+        assertTrue(userConfig.getAge() == age);
     }
 
     @Test

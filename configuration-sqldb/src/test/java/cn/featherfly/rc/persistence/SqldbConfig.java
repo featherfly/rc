@@ -18,6 +18,8 @@ import cn.featherfly.common.db.metadata.DatabaseMetadata;
 import cn.featherfly.common.db.metadata.DatabaseMetadataManager;
 import cn.featherfly.common.lang.ClassLoaderUtils;
 import cn.featherfly.constant.ConstantConfigurator;
+import cn.featherfly.conversion.string.ToStringConversionPolicys;
+import cn.featherfly.conversion.string.ToStringTypeConversion;
 import cn.featherfly.hammer.Hammer;
 import cn.featherfly.hammer.sqldb.SqldbHammerImpl;
 import cn.featherfly.hammer.sqldb.jdbc.Jdbc;
@@ -51,14 +53,16 @@ public class SqldbConfig {
     public ConfigurationSqlDBRepository configurationPersistenceSqlDBImpl(Hammer hammer) {
         ConfigurationSqlDBRepository p = new ConfigurationSqlDBRepository();
         p.setHammer(hammer);
+        p.setConversion(new ToStringTypeConversion(ToStringConversionPolicys.getBasicConversionPolicy()));
         return p;
     }
 
     @Bean
     public DataSource dataSource() {
         BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setUrl("jdbc:mysql://127.0.0.1:3306/rc_persitence");
-        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        dataSource.setUrl(
+                "jdbc:mysql://127.0.0.1:3306/rc_persitence?serverTimezone=CTT&characterEncoding=utf8&useUnicode=true&useSSL=false");
+        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setUsername("root");
         dataSource.setPassword("123456");
         return dataSource;
