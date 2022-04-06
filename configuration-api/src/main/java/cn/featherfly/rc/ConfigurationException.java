@@ -41,13 +41,6 @@ public class ConfigurationException extends LocalizedException {
     }
 
     /**
-     *
-     */
-    public ConfigurationException() {
-        super();
-    }
-
-    /**
      * @param message
      * @param locale
      * @param ex

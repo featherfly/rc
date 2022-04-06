@@ -83,7 +83,8 @@ public class ConfigurationFileRepository implements ConfigurationRepository {
      */
     @Override
     public <V extends Object> V get(String configName, String name, Class<V> type) {
-        String valueStr = Lang.ifNotEmpty(configurator.getConfig(configName, name), c -> c.getValue(), () -> null);
+        String valueStr = Lang.ifNotEmpty(configurator.getConfig(configName, name), c -> ((Config) c).getValue(),
+                () -> null);
         return conversion.targetToSource(valueStr, new GenericClass<>(type));
     }
 
