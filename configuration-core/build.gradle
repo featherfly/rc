@@ -4,5 +4,6 @@ dependencies {
     api 'cn.featherfly.common:common-spring:0.2.2'
     api 'cn.featherfly:featherfly-conversion:1.4.2'
     
-    //compileOnly files(System.getProperty("java.home") + "/../lib/tools.jar")
+   //compileOnly files(System.getProperty("java.home") + "/../lib/tools.jar")
+   implementation group: 'org.springframework', name: 'spring-context', version: '5.3.18'
 }
