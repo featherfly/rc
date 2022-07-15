@@ -1,3 +1,6 @@
+# 1.2.8 2022-07-15
+1. 修复使用jdk17时,springdev里的restartclassloader加载出错的问题
+
 # 1.2.7 2022-04-06
 1. 修复common-core不兼容升级
 

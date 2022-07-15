@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import cn.featherfly.common.lang.AssertIllegalArgument;
+import cn.featherfly.common.lang.ClassLoaderUtils;
 import cn.featherfly.common.lang.ClassUtils;
 import cn.featherfly.common.lang.CollectionUtils;
 import cn.featherfly.common.lang.matcher.MethodNameRegexMatcher;
@@ -42,7 +43,7 @@ public class DynamicConfigurationFacotry {
     private Map<Class<?>, Object> typeInstances = new HashMap<>();
 
     /**
-     *
+     * Instantiates a new dynamic configuration facotry.
      */
     public DynamicConfigurationFacotry() {
         super();
@@ -52,6 +53,7 @@ public class DynamicConfigurationFacotry {
      * <p>
      * return default DynamicConfigurationFacotry instance
      * </p>
+     * .
      *
      * @return DynamicConfigurationFacotry
      */
@@ -60,9 +62,9 @@ public class DynamicConfigurationFacotry {
     }
 
     /**
-     * always return a new instance
+     * always return a new instance.
      *
-     * @param <E>
+     * @param <E>        the element type
      * @param type       configuration interface type
      * @param repository ConfigurationRepository
      * @return new instance
@@ -86,9 +88,9 @@ public class DynamicConfigurationFacotry {
     }
 
     /**
-     * return a singleton instance, every type only new one instance
+     * return a singleton instance, every type only new one instance.
      *
-     * @param <E>
+     * @param <E>        the element type
      * @param type       configuration interface type
      * @param repository ConfigurationRepository
      * @return new instance
@@ -105,12 +107,12 @@ public class DynamicConfigurationFacotry {
     }
 
     /**
-     * create configuration interface implemented class
+     * create configuration interface implemented class.
      *
      * @param type configuration interface class
      * @return implemented class name
-     * @throws NotFoundException
-     * @throws CannotCompileException
+     * @throws NotFoundException      the not found exception
+     * @throws CannotCompileException the cannot compile exception
      */
     public String create(Class<?> type) throws NotFoundException, CannotCompileException {
         return create(type, this.getClass().getClassLoader());
@@ -182,7 +184,18 @@ public class DynamicConfigurationFacotry {
                 ctMethod.setModifiers(Modifier.PUBLIC);
                 dynamicImplClass.addMethod(ctMethod);
             }
-            dynamicImplClass.toClass(classLoader, dynamicImplClass.getClass().getProtectionDomain());
+
+            try {
+                byte[] code = dynamicImplClass.toBytecode();
+                Class<?> newType = ClassLoaderUtils.defineClass(classLoader, dynamicClassName, code,
+                        type.getProtectionDomain());
+                if (newType == null) {
+                    pool.toClass(dynamicImplClass, type, classLoader,
+                            dynamicImplClass.getClass().getProtectionDomain());
+                }
+            } catch (java.io.IOException e) {
+                throw new CannotCompileException(e);
+            }
             dynamicImplClass.detach();
             types.add(type);
         }
