@@ -1,10 +1,12 @@
 dependencies {
     api project(':configuration-api')
     //api 'cn.featherfly:featherfly-conversion:1.4.0'    
-    api 'cn.featherfly.hammer:hammer-sqldb:0.5.30'    
+    api 'cn.featherfly.hammer:hammer-sqldb:0.6.4'    
     //api 'cn.featherfly:featherfly-persistence-jdbc:1.4.2'    
     //api 'org.springframework:spring-context:5.2.1.RELEASE'
     //api 'cn.featherfly.common:common-spring:0.2.1'
+    
+    implementation 'org.springframework:spring-context:5.3.21'
     
     testImplementation project(':configuration-core')    
 }
