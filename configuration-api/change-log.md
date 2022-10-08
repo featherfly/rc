@@ -1,3 +1,6 @@
+# 1.2.9 2022-10-8
+1. 修复configuration-sqldb的初始化语句错误
+
 # 1.2.8 2022-07-15
 1. 修复使用jdk17时,springdev里的restartclassloader加载出错的问题
 
