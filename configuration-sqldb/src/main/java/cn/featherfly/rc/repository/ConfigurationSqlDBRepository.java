@@ -58,17 +58,12 @@ public class ConfigurationSqlDBRepository implements ConfigurationRepository {
     @Override
     @CachePut(value = { "configurationCache" }, key = "'config:'+ #configName + ':' + #name")
     @Transactional
-    public <V extends Object> ConfigurationRepository set(String configName, String name, V value) {
-        //        String sql = String.format("update %s set value = ? where config_name = ? and name = ?",
-        //                CONFIGURATION_VALUE_TABLE_NAME);
-        //        if (jdbcPersistence.execute(sql, new Object[] { value, configName, name }) < 1) {
-        //            ConfigurationException.throwConfigNotInit(configName, name);
-        //        }
+    public <V extends Object> V set(String configName, String name, V value) {
         if (hammer.update(CONFIGURATION_VALUE_TABLE_NAME).set("value", value).where().eq("config_name", configName)
                 .and().eq("name", name).execute() < 1) {
             ConfigurationException.throwConfigNotInit(configName, name);
         }
-        return this;
+        return value;
     }
 
     /**
@@ -87,9 +82,6 @@ public class ConfigurationSqlDBRepository implements ConfigurationRepository {
     @Override
     @Cacheable(value = { "configurationCache" }, key = "'config:'+ #configName + ':' + #name")
     public <V extends Object> V get(String configName, String name, Class<V> type) {
-        //        String sql = String.format("select value from %s where config_name = ? and name = ?",
-        //                CONFIGURATION_VALUE_TABLE_NAME);
-        //        String valueStr = jdbcPersistence.findForString(sql, new Object[] { configName, name });
         String valueStr = hammer.query(CONFIGURATION_VALUE_TABLE_NAME).property("value").where()
                 .eq("config_name", configName).and().eq("name", name).string();
         return conversion.targetToSource(valueStr, type);
@@ -100,12 +92,6 @@ public class ConfigurationSqlDBRepository implements ConfigurationRepository {
      */
     @Override
     public Collection<Configuration> getConfigurations() {
-        //        String sql = String.format("select name from %s order by NAME", CONFIGURATION_DIFINITION_TABLE_NAME);
-        //        List<String> names = jdbcPersistence.findForList(sql, String.class, new Object[] {});
-        //        List<Configuration> configurations = new ArrayList<>();
-        //        for (String name : names) {
-        //            configurations.add(getConfiguration(name));
-        //        }
         List<Map<String, Object>> configs = hammer.query(CONFIGURATION_DIFINITION_TABLE_NAME).sort().asc("name").list();
         List<Configuration> configurations = new ArrayList<>();
         for (Map<String, Object> configMap : configs) {

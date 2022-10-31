@@ -1,3 +1,6 @@
+# 1.3.0 2022-10-31
+1. 修改 V set(String configName, String name, V value)方法返回值用于修复缓存出错的问题
+
 # 1.2.9 2022-10-8
 1. 修复configuration-sqldb的初始化语句错误
 

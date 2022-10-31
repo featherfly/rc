@@ -55,12 +55,12 @@ public class ConfigurationFileRepository implements ConfigurationRepository {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <V extends Object> ConfigurationRepository set(String configName, String name, V value) {
+    public <V extends Object> V set(String configName, String name, V value) {
         Config config = new Config();
         config.setName(name);
         config.setValue(conversion.sourceToTarget(value, (Class<V>) value.getClass()));
         configurator.setConfig(configName, config);
-        return this;
+        return value;
     }
 
     /**

@@ -63,9 +63,9 @@ public interface ConfigurationRepository {
      * @param name       配置名称
      * @param value      值
      * @param <V>        泛型
-     * @return this
+     * @return value
      */
-    <V extends Object> ConfigurationRepository set(String configName, String name, V value);
+    <V extends Object> V set(String configName, String name, V value);
 
     /**
      * <p>
