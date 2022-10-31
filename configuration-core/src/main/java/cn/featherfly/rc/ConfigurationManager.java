@@ -16,6 +16,7 @@ import cn.featherfly.rc.annotation.Configurations;
  * <p>
  * ConfigurationManager
  * </p>
+ * .
  *
  * @author zhongj
  */
@@ -23,6 +24,11 @@ public class ConfigurationManager {
 
     private static final ConfigurationManager DEFAULT = new ConfigurationManager();
 
+    /**
+     * Gets the single instance of ConfigurationManager.
+     *
+     * @return single instance of ConfigurationManager
+     */
     public static ConfigurationManager getInstance() {
         return DEFAULT;
     }
@@ -30,10 +36,10 @@ public class ConfigurationManager {
     private Map<String, String> configNameTypeMap = new HashMap<>();
 
     /**
-     * getConfigurations
+     * getConfigurations.
      *
-     * @param metadataReaders
-     * @return
+     * @param metadataReaders the metadata readers
+     * @return the configurations
      */
     public Set<MetadataReader> getConfigurations(Set<MetadataReader> metadataReaders) {
         Set<MetadataReader> configurations = new HashSet<>();
@@ -47,10 +53,10 @@ public class ConfigurationManager {
     }
 
     /**
-     * scanConfigurations
+     * scanConfigurations.
      *
-     * @param basePackages
-     * @return
+     * @param basePackages the base packages
+     * @return the sets the
      */
     public Set<MetadataReader> scanConfigurations(String... basePackages) {
         return getConfigurations(new ClassPathScanningProvider().findMetadata(basePackages));

@@ -58,7 +58,7 @@ public class ConfigurationSqlDBRepository implements ConfigurationRepository {
     @Override
     @CachePut(value = { "configurationCache" }, key = "'config:'+ #configName + ':' + #name")
     @Transactional
-    public <V extends Object> ConfigurationRepository set(String configName, String name, V value) {
+    public <V extends Object> V set(String configName, String name, V value) {
         //        String sql = String.format("update %s set value = ? where config_name = ? and name = ?",
         //                CONFIGURATION_VALUE_TABLE_NAME);
         //        if (jdbcPersistence.execute(sql, new Object[] { value, configName, name }) < 1) {
@@ -68,7 +68,7 @@ public class ConfigurationSqlDBRepository implements ConfigurationRepository {
                 .and().eq("name", name).execute() < 1) {
             ConfigurationException.throwConfigNotInit(configName, name);
         }
-        return this;
+        return value;
     }
 
     /**

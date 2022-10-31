@@ -56,12 +56,12 @@ public class ConfigurationFileRepository implements ConfigurationRepository {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <V extends Object> ConfigurationRepository set(String configName, String name, V value) {
+    public <V extends Object> V set(String configName, String name, V value) {
         Config config = new Config();
         config.setName(name);
         config.setValue(conversion.sourceToTarget(value, (Class<V>) value.getClass()));
         configurator.setConfig(configName, config);
-        return this;
+        return value;
     }
 
     /**
@@ -83,7 +83,8 @@ public class ConfigurationFileRepository implements ConfigurationRepository {
      */
     @Override
     public <V extends Object> V get(String configName, String name, Class<V> type) {
-        String valueStr = Lang.ifNotEmpty(configurator.getConfig(configName, name), c -> c.getValue(), () -> null);
+        String valueStr = Lang.ifNotEmpty(configurator.getConfig(configName, name), c -> ((Config) c).getValue(),
+                () -> null);
         return conversion.targetToSource(valueStr, new GenericClass<>(type));
     }
 
