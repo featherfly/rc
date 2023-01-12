@@ -37,6 +37,17 @@ public class TestDynamicFactory {
     public void testFileStorage() {
         WechatConfiguration wechat = DynamicConfigurationFacotry.getInstance().instance(WechatConfiguration.class,
                 persistence);
+
+        System.out.println(wechat.getAllowAutoRegist());
+        wechat.setAllowAutoRegist(!wechat.getAllowAutoRegist());
+        System.out.println(wechat.getAllowAutoRegist());
+    }
+
+    @Test
+    public void testFileStorage2() {
+        WechatConfiguration wechat = DynamicConfigurationFacotry.getInstance().instance(WechatConfiguration.class,
+                persistence);
+
         System.out.println(wechat.getAllowAutoRegist());
         wechat.setAllowAutoRegist(!wechat.getAllowAutoRegist());
         System.out.println(wechat.getAllowAutoRegist());

@@ -5,9 +5,13 @@ allprojects {
 
 	sourceCompatibility = 1.8  
 	targetCompatibility = 1.8 
+	
+	ext {
+	   conversion = 'cn.featherfly:featherfly-conversion:1.4.3'
+	}
 
 	dependencies {
-        api 'cn.featherfly.common:common-core:1.10.7'
+        api 'cn.featherfly.common:common-core:1.11.0'
         /*
 	    implementation 'cn.featherfly:featherfly-algorithm:1.0.2'
 	    */

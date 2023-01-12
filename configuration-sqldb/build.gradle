@@ -1,6 +1,6 @@
 dependencies {
     api project(':configuration-api')
-    //api 'cn.featherfly:featherfly-conversion:1.4.0'    
+    api conversion    
     api 'cn.featherfly.hammer:hammer-sqldb:0.6.4'    
     //api 'cn.featherfly:featherfly-persistence-jdbc:1.4.2'    
     //api 'org.springframework:spring-context:5.2.1.RELEASE'

@@ -12,13 +12,13 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.featherfly.common.lang.ClassUtils;
 import cn.featherfly.conversion.string.ToStringConversionPolicys;
 import cn.featherfly.conversion.string.ToStringTypeConversion;
 import cn.featherfly.hammer.Hammer;
 import cn.featherfly.rc.Configuration;
 import cn.featherfly.rc.ConfigurationException;
 import cn.featherfly.rc.ConfigurationRepository;
+import cn.featherfly.rc.ConfigurationUtils;
 import cn.featherfly.rc.ConfigurationValue;
 import cn.featherfly.rc.SimpleConfiguration;
 import cn.featherfly.rc.SimpleConfigurationValue;
@@ -119,9 +119,8 @@ public class ConfigurationSqlDBRepository implements ConfigurationRepository {
      * {@inheritDoc}
      */
     @Override
-    public <C extends Configuration> C getConfiguration(String name, Class<C> type) {
-        C configuration = ClassUtils.newInstance(type, new Object[] { name, this });
-        return configuration;
+    public Configuration getConfiguration(Class<?> type) {
+        return getConfiguration(ConfigurationUtils.getConfigurations(type).name());
     }
 
     /**

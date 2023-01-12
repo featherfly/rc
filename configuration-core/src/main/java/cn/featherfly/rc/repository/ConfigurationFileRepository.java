@@ -9,12 +9,12 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.featherfly.common.lang.ClassUtils;
-import cn.featherfly.common.lang.reflect.GenericClass;
+import cn.featherfly.common.lang.reflect.ClassType;
 import cn.featherfly.conversion.string.ToStringConversionPolicys;
 import cn.featherfly.conversion.string.ToStringTypeConversion;
 import cn.featherfly.rc.Configuration;
 import cn.featherfly.rc.ConfigurationRepository;
+import cn.featherfly.rc.ConfigurationUtils;
 import cn.featherfly.rc.ConfigurationValue;
 import cn.featherfly.rc.SimpleConfiguration;
 import cn.featherfly.rc.SimpleConfigurationValue;
@@ -87,7 +87,7 @@ public class ConfigurationFileRepository implements ConfigurationRepository {
         if (c != null) {
             valueStr = c.getValue();
         }
-        return conversion.targetToSource(valueStr, new GenericClass<>(type));
+        return conversion.targetToSource(valueStr, new ClassType<>(type));
     }
 
     /**
@@ -116,9 +116,8 @@ public class ConfigurationFileRepository implements ConfigurationRepository {
      * {@inheritDoc}
      */
     @Override
-    public <C extends Configuration> C getConfiguration(String name, Class<C> type) {
-        C configuration = ClassUtils.newInstance(type, new Object[] { name, this });
-        return configuration;
+    public Configuration getConfiguration(Class<?> type) {
+        return getConfiguration(ConfigurationUtils.getConfigurations(type).name());
     }
 
     /**

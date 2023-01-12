@@ -5,6 +5,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -14,7 +15,7 @@ import org.testng.annotations.Test;
 
 import cn.featherfly.common.io.ClassPathScanningProvider;
 import cn.featherfly.common.io.FileUtils;
-import cn.featherfly.common.lang.LangUtils;
+import cn.featherfly.common.lang.Lang;
 import cn.featherfly.rc.Configuration;
 import cn.featherfly.rc.ConfigurationValue;
 import cn.featherfly.rc.repository.ConfigurationFileRepository;
@@ -36,7 +37,7 @@ public class ConfigurationFileImplTest {
     @BeforeClass
     public void before() {
         // 删除配置目录
-        LangUtils.ifExists(new File(
+        Lang.ifExists(new File(
                 org.apache.commons.io.FileUtils.getUserDirectoryPath() + "/.featherfly_configuration/" + projectName),
                 f -> FileUtils.deleteDir(f), f -> FileUtils.makeDirectory(f));
 
@@ -90,6 +91,30 @@ public class ConfigurationFileImplTest {
             }
         }
         //        System.out.println(repository.getConfigurations("test"));
+    }
+
+    @Test
+    public void testAll() {
+        Collection<Configuration> cs = repository.getConfigurations();
+        for (Configuration configuration : cs) {
+            System.out.println(configuration.getName());
+            List<ConfigurationValue<?>> configs = repository.getConfigurations(configuration.getName());
+            for (ConfigurationValue<?> v : configs) {
+                System.out.println("    " + v.getName() + " " + v.getValue() + " " + v.getDescp());
+                if (v.getName().equals("name")) {
+                    assertEquals(v.getValue(), "yufei");
+                    assertEquals(v.getDescp(), "姓名");
+                }
+                if (v.getName().equals("age")) {
+                    assertEquals(v.getValue(), "18");
+                    assertEquals(v.getDescp(), "年龄");
+                }
+                if (v.getName().equals("sex")) {
+                    assertEquals(v.getValue(), "1");
+                    assertNull(v.getDescp());
+                }
+            }
+        }
     }
 
 }

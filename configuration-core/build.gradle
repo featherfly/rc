@@ -1,8 +1,8 @@
 dependencies {
     api project(':configuration-api')
     api group: 'org.javassist', name: 'javassist', version: '3.29.0-GA'
-    api 'cn.featherfly.common:common-spring:0.2.2'
-    api 'cn.featherfly:featherfly-conversion:1.4.2'
+    api 'cn.featherfly.common:common-spring:0.3.0'
+    api conversion
     
    //compileOnly files(System.getProperty("java.home") + "/../lib/tools.jar")
    implementation group: 'org.springframework', name: 'spring-context', version: '5.3.18'

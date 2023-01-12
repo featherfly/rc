@@ -1,3 +1,7 @@
+# 1.3.1 2023-01-12
+1. 非兼容性版本升级
+2. ConfigurationRepository.get(String,Class)重构为get(Class)
+
 # 1.3.0 2022-10-31
 1. 修改 V set(String configName, String name, V value)方法返回值用于修复缓存出错的问题
 

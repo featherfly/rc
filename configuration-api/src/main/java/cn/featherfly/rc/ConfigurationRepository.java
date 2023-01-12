@@ -23,9 +23,7 @@ public interface ConfigurationRepository {
     Collection<Configuration> getConfigurations();
 
     /**
-     * <p>
-     * 获取指定名称的配置
-     * </p>
+     * 获取指定名称的配置.
      *
      * @param configName 配置定义名称
      * @return 配置对象
@@ -33,16 +31,12 @@ public interface ConfigurationRepository {
     Configuration getConfiguration(String configName);
 
     /**
-     * <p>
-     * 获取指定名称的配置
-     * </p>
+     * 获取指定类型的配置.
      *
-     * @param configName 配置定义名称
-     * @param type       配置定义类型
-     * @param <C>        配置对象泛型
+     * @param type 配置定义类型
      * @return 配置对象
      */
-    <C extends Configuration> C getConfiguration(String configName, Class<C> type);
+    Configuration getConfiguration(Class<?> type);
 
     /**
      * <p>
