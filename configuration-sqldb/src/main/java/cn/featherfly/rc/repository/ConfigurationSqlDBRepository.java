@@ -24,10 +24,7 @@ import cn.featherfly.rc.SimpleConfiguration;
 import cn.featherfly.rc.SimpleConfigurationValue;
 
 /**
- * <p>
- * ConfigurationPersistenceService
- * </p>
- * .
+ * ConfigurationPersistenceService.
  *
  * @author 钟冀
  */
