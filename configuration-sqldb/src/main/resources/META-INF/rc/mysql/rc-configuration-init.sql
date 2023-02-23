@@ -18,6 +18,6 @@ CREATE TABLE `rc_configuration_value`  (
   `descp` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `value` varchar(300) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`config_name`, `name`) USING BTREE,
-  CONSTRAINT `FK_REFERENCE_CONFIG_NAME` FOREIGN KEY (`name`) REFERENCES `rc_configuration_difinition` (`name`) ON DELETE
+  CONSTRAINT `FK_REFERENCE_CONFIG_NAME` FOREIGN KEY (`config_name`) REFERENCES `rc_configuration_difinition` (`name`) ON DELETE
    RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
