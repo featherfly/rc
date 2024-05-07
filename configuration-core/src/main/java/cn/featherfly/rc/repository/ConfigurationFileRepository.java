@@ -20,14 +20,13 @@ import cn.featherfly.rc.SimpleConfiguration;
 import cn.featherfly.rc.SimpleConfigurationValue;
 
 /**
- * <p>
- * ConfigurationFileRepository
- * </p>
+ * ConfigurationFileRepository.
  *
  * @author 钟冀
  */
 public class ConfigurationFileRepository implements ConfigurationRepository {
 
+    /** The logger. */
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private PropertiesFileConfigurator configurator;
@@ -35,15 +34,19 @@ public class ConfigurationFileRepository implements ConfigurationRepository {
     private ToStringTypeConversion conversion;
 
     /**
-     * @param configurator
+     * Instantiates a new configuration file repository.
+     *
+     * @param configurator the configurator
      */
     public ConfigurationFileRepository(PropertiesFileConfigurator configurator) {
         this(configurator, new ToStringTypeConversion(ToStringConversionPolicys.getBasicConversionPolicy()));
     }
 
     /**
-     * @param configurator
-     * @param conversion
+     * Instantiates a new configuration file repository.
+     *
+     * @param configurator the configurator
+     * @param conversion   the conversion
      */
     public ConfigurationFileRepository(PropertiesFileConfigurator configurator, ToStringTypeConversion conversion) {
         this.configurator = configurator;
@@ -70,10 +73,10 @@ public class ConfigurationFileRepository implements ConfigurationRepository {
     @Override
     public ConfigurationRepository set(String configName, Map<String, Object> configNameValueMap) {
         configurator.setConfig(configName,
-                configNameValueMap.entrySet().stream()
-                        .map(e -> new Config(e.getKey(),
-                                conversion.sourceToTarget(e.getValue(), (Class<Object>) e.getValue().getClass())))
-                        .toArray(value -> new Config[configNameValueMap.size()]));
+            configNameValueMap.entrySet().stream()
+                .map(e -> new Config(e.getKey(),
+                    conversion.sourceToTarget(e.getValue(), (Class<Object>) e.getValue().getClass())))
+                .toArray(value -> new Config[configNameValueMap.size()]));
         return this;
     }
 

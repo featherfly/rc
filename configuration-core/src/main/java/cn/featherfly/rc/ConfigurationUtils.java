@@ -17,13 +17,19 @@ import cn.featherfly.rc.annotation.Configurations;
  *
  * @author zhongj
  */
-public class ConfigurationUtils {
+public final class ConfigurationUtils {
+
+    /**
+     * Instantiates a new configuration utils.
+     */
+    private ConfigurationUtils() {
+    }
 
     public static Configurations getConfigurations(Class<?> configType) {
         Configurations cd = configType.getAnnotation(Configurations.class);
         if (cd == null) {
             throw new ConfigurationException(String.format("there is no annotation[%s] in type[%s]",
-                    Configurations.class.getName(), configType.getName()));
+                Configurations.class.getName(), configType.getName()));
         }
         return cd;
     }
