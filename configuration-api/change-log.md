@@ -1,3 +1,9 @@
+TODO 返回的用于查询的对象值加入类型，目前从数据库查询出来都是字符串
+
+# 1.3.2 2024-05-05
+1. 修复ConfigurationSqlDBRepository getConfiguration(String name)方法空指针异常
+2. 升级依赖
+
 # 1.3.1 2023-01-12
 1. 非兼容性版本升级
 2. ConfigurationRepository.get(String,Class)重构为get(Class)

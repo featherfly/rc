@@ -12,6 +12,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.featherfly.common.lang.Lang;
 import cn.featherfly.conversion.string.ToStringConversionPolicys;
 import cn.featherfly.conversion.string.ToStringTypeConversion;
 import cn.featherfly.hammer.Hammer;
@@ -107,6 +108,9 @@ public class ConfigurationSqlDBRepository implements ConfigurationRepository {
     }
 
     private Configuration create(Map<String, Object> configMap) {
+        if (Lang.isEmpty(configMap)) {
+            return null;
+        }
         Object objDescp = configMap.get("descp");
         String descp = objDescp == null ? null : objDescp.toString();
         return new SimpleConfiguration(configMap.get("name").toString(), descp, this);
