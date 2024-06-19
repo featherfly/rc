@@ -46,7 +46,7 @@ public class ConfigurationFileRepository implements ConfigurationRepository {
      * Instantiates a new configuration file repository.
      *
      * @param configurator the configurator
-     * @param conversion   the conversion
+     * @param conversion the conversion
      */
     public ConfigurationFileRepository(PropertiesFileConfigurator configurator, ToStringTypeConversion conversion) {
         this.configurator = configurator;
@@ -56,12 +56,11 @@ public class ConfigurationFileRepository implements ConfigurationRepository {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
     @Override
     public <V extends Object> V set(String configName, String name, V value) {
         Config config = new Config();
         config.setName(name);
-        config.setValue(conversion.sourceToTarget(value, (Class<V>) value.getClass()));
+        config.setValue(conversion.sourceToString(value));
         configurator.setConfig(configName, config);
         return value;
     }
@@ -69,13 +68,11 @@ public class ConfigurationFileRepository implements ConfigurationRepository {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
     @Override
     public ConfigurationRepository set(String configName, Map<String, Object> configNameValueMap) {
         configurator.setConfig(configName,
             configNameValueMap.entrySet().stream()
-                .map(e -> new Config(e.getKey(),
-                    conversion.sourceToTarget(e.getValue(), (Class<Object>) e.getValue().getClass())))
+                .map(e -> new Config(e.getKey(), conversion.sourceToString(e.getValue())))
                 .toArray(value -> new Config[configNameValueMap.size()]));
         return this;
     }

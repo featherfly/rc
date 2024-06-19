@@ -44,6 +44,9 @@ public class SqldbTest extends AbstractTestNGSpringContextTests {
     @Resource
     private DataSource dataSource;
 
+    final int newAge = 18;
+    final String newName = "yufei_update";
+
     @BeforeClass
     public void init() throws IOException {
         SqlExecutor sqlExecutor = new SqlExecutor(dataSource);
@@ -52,21 +55,20 @@ public class SqldbTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void test() {
-        int age = 28;
-        userConfig.setAge(age);
-        userConfig.setName("yufei");
+        userConfig.setAge(newAge);
+        userConfig.setName(newName);
         System.out.println(userConfig.getName());
         System.out.println(userConfig.getAge());
 
-        assertTrue(userConfig.getAge() == age);
+        assertTrue(userConfig.getAge() == newAge);
     }
 
     @Test
     public void test2() {
         System.out.println(userConfig.getName());
         System.out.println(userConfig.getAge());
-        assertTrue(userConfig.getAge() == 18);
-        assertNull(userConfig.getName());
+        assertEquals(userConfig.getAge().intValue(), newAge);
+        assertEquals(userConfig.getName(), newName);
     }
 
     @Test
@@ -77,11 +79,11 @@ public class SqldbTest extends AbstractTestNGSpringContextTests {
         List<ConfigurationValue<?>> configs = repository.getConfigurations("UserConfig2");
         for (ConfigurationValue<?> v : configs) {
             if (v.getName().equals("name")) {
-                assertEquals(v.getValue(), "yufei");
+                assertEquals(v.getValue(), newName);
                 assertEquals(v.getDescp(), "name");
             }
             if (v.getName().equals("age")) {
-                assertEquals(v.getValue(), "12");
+                assertEquals(v.getValue(), newAge + "");
                 assertEquals(v.getDescp(), "age");
             }
         }

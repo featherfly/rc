@@ -3,23 +3,23 @@ create database rc_persitence;
 use rc_persitence;
 
 SET FOREIGN_KEY_CHECKS=0;
+DROP TABLE IF EXISTS `rc_configuration_difinition`;
+CREATE TABLE `rc_configuration_difinition`  (
+  `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `descp` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`NAME`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
-CREATE TABLE RC_CONFIGURATION_DIFINITION
-(
-   NAME                 VARCHAR(100) NOT NULL,
-   DESCP                VARCHAR(50),
-   PRIMARY KEY (NAME)
-);
-CREATE TABLE RC_CONFIGURATION_VALUE
-(
-   CONFIG_NAME          VARCHAR(100),
-   NAME                 VARCHAR(50),
-   DESCP                VARCHAR(50),
-   VALUE                VARCHAR(300),
-   PRIMARY KEY (CONFIG_NAME, NAME)
-);
-ALTER TABLE RC_CONFIGURATION_VALUE ADD CONSTRAINT FK_REFERENCE_CONFIG_NAME FOREIGN KEY (CONFIG_NAME)
-      REFERENCES RC_CONFIGURATION_DIFINITION (NAME) ON DELETE RESTRICT ON UPDATE RESTRICT;
+DROP TABLE IF EXISTS `rc_configuration_value`;
+CREATE TABLE `rc_configuration_value`  (
+  `config_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `descp` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `value` varchar(300) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`config_name`, `name`) USING BTREE,
+  CONSTRAINT `FK_REFERENCE_CONFIG_NAME` FOREIGN KEY (`config_name`) REFERENCES `rc_configuration_difinition` (`name`) ON DELETE
+   RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 INSERT INTO `rc_configuration_difinition` VALUES ('UserConfig2', null);
 INSERT INTO `rc_configuration_value` VALUES ('UserConfig2', 'age', 'age', '12');

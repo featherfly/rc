@@ -46,9 +46,6 @@ public class PropertiesFileConfigurator {
     /** The logger. */
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    // private static final String CONFIG_FILE_NAME =
-    // "featherfly_configuration.properties";
-
     private Map<String, File> configFileMap = new HashMap<>();
     private Map<String, Properties> propertiesMap = new HashMap<>();
 
@@ -88,7 +85,7 @@ public class PropertiesFileConfigurator {
     /**
      * Instantiates a new properties file configurator.
      *
-     * @param projectName     projectName
+     * @param projectName projectName
      * @param metadataReaders metadataReaders
      */
     public PropertiesFileConfigurator(String projectName, Set<MetadataReader> metadataReaders) {
@@ -98,13 +95,13 @@ public class PropertiesFileConfigurator {
     /**
      * Instantiates a new properties file configurator.
      *
-     * @param projectName     projectName
-     * @param filePolicy      filePolicy
-     * @param dirPolicy       dirPolicy
+     * @param projectName projectName
+     * @param filePolicy filePolicy
+     * @param dirPolicy dirPolicy
      * @param metadataReaders metadataReaders
      */
     public PropertiesFileConfigurator(String projectName, FilePolicy filePolicy, DirPolicy dirPolicy,
-            Set<MetadataReader> metadataReaders) {
+        Set<MetadataReader> metadataReaders) {
         super();
         AssertIllegalArgument.isNotNull(projectName, "projectName");
         this.projectName = projectName;
@@ -117,7 +114,7 @@ public class PropertiesFileConfigurator {
     private void init() {
         if (dirPolicy == DirPolicy.USER_DIR) {
             storeDir = new File(
-                    org.apache.commons.io.FileUtils.getUserDirectoryPath() + "/" + DIR_NAME + "/" + projectName);
+                org.apache.commons.io.FileUtils.getUserDirectoryPath() + "/" + DIR_NAME + "/" + projectName);
         }
         if (filePolicy == FilePolicy.EACH_FILE_FOR_DEFINE || filePolicy == FilePolicy.EACH_FILE_FOR_DEFINE_IN_PACKAGE) {
             for (MetadataReader metadataReader : metadataReaders) {
@@ -128,7 +125,7 @@ public class PropertiesFileConfigurator {
                     File file;
                     if (filePolicy == FilePolicy.EACH_FILE_FOR_DEFINE_IN_PACKAGE) {
                         file = new File(storeDir.getAbsoluteFile() + "/" + ClassUtils.packageToDir(type) + "/"
-                                + type.getSimpleName() + ".properties");
+                            + type.getSimpleName() + ".properties");
                     } else {
                         file = new File(storeDir.getAbsoluteFile() + "/" + configName + ".properties");
                     }
@@ -140,27 +137,25 @@ public class PropertiesFileConfigurator {
                         try {
                             properties.setProperty(type.getName(), configName, descp);
 
-                            Collection<Method> getMethods = ClassUtils.findMethods(type,
-                                    new MethodNameRegexMatcher("get.+"));
-                            Collection<Method> setMethods = ClassUtils.findMethods(type,
-                                    new MethodNameRegexMatcher("set.+"));
+                            Collection<
+                                Method> getMethods = ClassUtils.findMethods(type, new MethodNameRegexMatcher("get.+"));
+                            Collection<
+                                Method> setMethods = ClassUtils.findMethods(type, new MethodNameRegexMatcher("set.+"));
 
                             Map<String, Configuration> map = new HashMap<>();
                             for (Method setMethod : setMethods) {
-                                Lang.ifNotEmpty(setMethod.getAnnotation(Configuration.class),
-                                        a -> map.put(ClassUtils.getPropertyName(setMethod), a));
+                                Lang.ifNotNull(setMethod.getAnnotation(Configuration.class),
+                                    a -> map.put(ClassUtils.getPropertyName(setMethod), a));
                             }
                             for (Method getMethod : getMethods) {
-                                Lang.ifNotEmpty(getMethod.getAnnotation(Configuration.class),
-                                        a -> map.put(ClassUtils.getPropertyName(getMethod), a));
+                                Lang.ifNotNull(getMethod.getAnnotation(Configuration.class),
+                                    a -> map.put(ClassUtils.getPropertyName(getMethod), a));
                             }
                             map.entrySet()
-                                    .forEach(e -> properties.setProperty(
-                                            Lang.ifEmpty(e.getValue().name(), () -> e.getKey(), n -> n),
-                                            e.getValue().value(), e.getValue().descp()));
+                                .forEach(e -> properties.setProperty(
+                                    Lang.ifEmptyOrElse(e.getValue().name(), () -> e.getKey(), n -> n),
+                                    e.getValue().value(), e.getValue().descp()));
                             properties.store(new FileOutputStream(file));
-
-                            // configMap.put(configName, properties);
                             logger.debug("create file {} for {}", file.getAbsolutePath(), type.getName());
                         } catch (IOException e) {
                             // FIXME 需要更精确的异常描述
@@ -273,7 +268,7 @@ public class PropertiesFileConfigurator {
      * Sets the config.
      *
      * @param configName the config name
-     * @param configs    the configs
+     * @param configs the configs
      * @return the properties file configurator
      */
     public PropertiesFileConfigurator setConfig(String configName, Config... configs) {
@@ -288,7 +283,7 @@ public class PropertiesFileConfigurator {
                 propertiesMap.put(configName, properties);
             } catch (IOException e) {
                 throw new ConfigurationException(String.format("为%s的%s设置值%s时发生错误%s", configName, config.getName(),
-                        config.getValue(), e.getMessage()));
+                    config.getValue(), e.getMessage()));
             }
         }
         return this;
@@ -298,7 +293,7 @@ public class PropertiesFileConfigurator {
      * Gets the config.
      *
      * @param configName the config name
-     * @param name       the name
+     * @param name the name
      * @return the config
      */
     public Config getConfig(String configName, String name) {
